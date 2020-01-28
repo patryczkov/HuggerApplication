@@ -26,6 +26,7 @@ namespace Hugger_Web_Application.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //join table User - Characteristic
             modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new { UserChar.UserId, UserChar.CharacteristicId });
 
             modelBuilder.Entity<UserCharacteristic>()
@@ -38,8 +39,34 @@ namespace Hugger_Web_Application.Models
                 .WithMany(Char => Char.UserCharacteristics)
                 .HasForeignKey(UserChar => UserChar.CharacteristicId);
 
+            //join table User - Preference
+            modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.UserId, UserPref.PreferenceId });
 
-            
+            modelBuilder.Entity<UserPreference>()
+                .HasOne<User>(UserPref => UserPref.User)
+                .WithMany(Usr => Usr.UsersPreferences)
+                .HasForeignKey(UserPref => UserPref.UserId);
+
+            modelBuilder.Entity<UserPreference>()
+                .HasOne<Preference>(UserPref => UserPref.Preference)
+                .WithMany(Pref => Pref.UsersPreferences)
+                .HasForeignKey(UserPref => UserPref.PreferenceId);
+
+            //join table User - Match (Hugs)
+            modelBuilder.Entity<Hug>().HasKey(Hg => new { Hg.UserUUIDSender, Hg.UserUUIDReceiver });
+
+            modelBuilder.Entity<Hug>()
+                .HasOne<User>(Hg => Hg.User)
+                .WithMany(Usr => Usr.Hugs)
+                .HasForeignKey(Hg => Hg.UserUUIDSender);
+
+            modelBuilder.Entity<Hug>()
+                .HasOne<User>(Hg => Hg.User)
+                .WithMany(Usr => Usr.Hugs)
+                .HasForeignKey(Hg => Hg.UserUUIDReceiver);
+
+
+
 
 
 

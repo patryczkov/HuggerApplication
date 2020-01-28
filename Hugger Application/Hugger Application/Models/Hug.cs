@@ -12,12 +12,12 @@ namespace Hugger_Web_Application.Models
         [Key]
         public int Id { get; set; }
         [ForeignKey("Users")]
-        public int User_UUID_sender { get; set; }
+        public int UserUUIDSender { get; set; }
         [ForeignKey("Users")]
-        public int User_UUID_receiver { get; set; }
+        public int UserUUIDReceiver { get; set; }
+        
 
-        public virtual UserCharacteristic User { get; set; }
+        public virtual User User { get; set; }
 
-        public ICollection<Match> Matches { get; set; }
     }
 }

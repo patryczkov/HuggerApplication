@@ -25,6 +25,7 @@ namespace Hugger_Web_Application.Models
         public ICollection<UserCharacteristic> UserCharacteristics { get; set; }
         public ICollection<UserPreference> UsersPreferences { get; set; }
         public ICollection<Hug> Hugs { get; set; }
+        public ICollection<Match> Matches { get; set; }
 
     }
 }
