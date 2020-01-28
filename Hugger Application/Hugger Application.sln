@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hugger Application", "Hugger Application\Hugger Application.csproj", "{1221E3E1-5E78-4C4D-A091-51716B6F035B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1221E3E1-5E78-4C4D-A091-51716B6F035B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1221E3E1-5E78-4C4D-A091-51716B6F035B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1221E3E1-5E78-4C4D-A091-51716B6F035B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1221E3E1-5E78-4C4D-A091-51716B6F035B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4008A5F6-3670-402B-B5FD-74314F44DA40}
+	EndGlobalSection
+EndGlobal
