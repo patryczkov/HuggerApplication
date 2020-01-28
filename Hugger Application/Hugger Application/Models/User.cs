@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,16 +9,22 @@ namespace Hugger_Web_Application.Models
 {
     public class User
     {
-        public int id { get; set; }
+        public int Id { get; set; }
+        [Key]
         public int UUID { get; set; }
-        public string login  { get; set; }
-        public string password { get; set; }
-        public int localization_id { get; set; }
-        public  string folder_path { get; set; }
-        public int last_watched_user_id { get; set; }
+        public string Login  { get; set; }
+        public string Password { get; set; }
+        public  string FolderPath { get; set; }
+        public int LastWatchedUserId { get; set; }
+        [ForeignKey("Localizations")]
+        public int LocalizationId { get; set; }
+        
+        public virtual Localization Localization { get; set; }
+        
 
-        public ICollection<User_Characteristic> User_Characteristics { get; set; }
-        public ICollection<User_Preference> Users_Preferences { get; set; }
+        public ICollection<User> UserCharacteristics { get; set; }
+        public ICollection<UserPreference> UsersPreferences { get; set; }
+        public ICollection<Hug> Hugs { get; set; }
 
     }
 }

@@ -8,10 +8,9 @@ namespace Hugger_Web_Application.Models
 {
     public class Characteristic
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int id { get; set; }
-        public string name { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
 
-        public ICollection<User_Characteristic> User_Characteristics { get; set; }
+        public ICollection<User> UserCharacteristics { get; set; }
     }
 }

@@ -7,9 +7,10 @@ namespace Hugger_Web_Application.Models
 {
     public class Localization
     {
-        public int id { get; set; }
+        
+        public int Id { get; set; }
         public string GPS { get; set; }
-        public string localization_name { get; set; }
+        public string LocalizationName { get; set; }
     }
 }
 

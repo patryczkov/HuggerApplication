@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,10 +9,15 @@ namespace Hugger_Web_Application.Models
 {
     public class Message
     {
-        public int id { get; set; }
-        public int match_id { get; set; }
-        public int user_UUID_receiver_of_message { get; set; }
-        public string time_of_send { get; set; }
-        public int was_read { get; set; }
+        [Key]
+        public int Id { get; set; }
+        
+        public string TimeOfSend { get; set; }
+        public int WasRead { get; set; }
+
+        public int UserUUIDReceiverOfMessage { get; set; }
+        [ForeignKey("Matches")]
+        public int MatchId { get; set; }
+        public Match Match { get; set; }
     }
 }
