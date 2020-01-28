@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Drive.v3;
 using System;
+using System.Collections.Generic;
 
 namespace Hugger_Application.Models.GoogleDriveAPI
 {
@@ -23,6 +24,29 @@ namespace Hugger_Application.Models.GoogleDriveAPI
             var request = service.Files.Delete(folderName);
 
             request.Execute();
+        }
+
+        public static string ReturnFolderIdByName(DriveService service, string folderName)
+        {
+            FilesResource.ListRequest listRequest = service.Files.List();
+            listRequest.PageSize = 10;
+            listRequest.Q = $"mimeType = 'application/vnd.google-apps.folder' and name = '{folderName}'";
+            listRequest.Fields = "nextPageToken, files(id, name)";
+
+            IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
+            string folderID = null;
+
+            if (files != null && files.Count > 0)
+            {
+                foreach (var file in files)
+                {
+                    folderID = file.Id;
+                }
+                Console.WriteLine($"Folder: {folderName} has ID: {folderID}");
+            } else
+                Console.WriteLine($"Folder {folderName} not found!");
+            
+            return folderID;
         }
     }
 }

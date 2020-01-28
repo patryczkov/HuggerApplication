@@ -20,6 +20,7 @@ namespace Hugger_Application
 
             //FolderManager.CreateFolder("Folder", service);
             //FolderManager.DeleteFolder("1k4j8TSWYF_TU_KHFNbfDXokVNRbJ8xVX", service);
+            //FolderManager.ReturnFolderIdByName(service, "Folder");
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
