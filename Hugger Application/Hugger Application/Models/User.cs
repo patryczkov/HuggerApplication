@@ -22,7 +22,7 @@ namespace Hugger_Web_Application.Models
         public virtual Localization Localization { get; set; }
         
 
-        public ICollection<User> UserCharacteristics { get; set; }
+        public ICollection<UserCharacteristic> UserCharacteristics { get; set; }
         public ICollection<UserPreference> UsersPreferences { get; set; }
         public ICollection<Hug> Hugs { get; set; }
 

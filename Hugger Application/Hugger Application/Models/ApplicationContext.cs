@@ -12,8 +12,8 @@ namespace Hugger_Web_Application.Models
         {
 
         }
-        public DbSet<User> Users { get; set; }
-        public DbSet<User> Users_Characteristics { get; set; }
+        public DbSet<UserCharacteristic> Users { get; set; }
+        public DbSet<UserCharacteristic> Users_Characteristics { get; set; }
         public DbSet<Characteristic> Characteristics { get; set; }
 
         public DbSet<Localization> Localizations { get; set; }
@@ -26,30 +26,20 @@ namespace Hugger_Web_Application.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(UserChar => new { UserChar.UserId, UserChar.CharacteristicId });
+            modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new { UserChar.UserId, UserChar.CharacteristicId });
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserCharacteristic>()
                 .HasOne<User>(UserChar => UserChar.User)
                 .WithMany(Usr => Usr.UserCharacteristics)
                 .HasForeignKey(UserChar => UserChar.UserId);
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserCharacteristic>()
                 .HasOne<Characteristic>(UserChar => UserChar.Characteristic)
                 .WithMany(Char => Char.UserCharacteristics)
                 .HasForeignKey(UserChar => UserChar.CharacteristicId);
 
 
-            modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.UserId, UserPref.PreferenceId });
-
-            modelBuilder.Entity<User>()
-                .HasOne<User>(UserChar => UserChar.User)
-                .WithMany(Usr => Usr.UserCharacteristics)
-                .HasForeignKey(UserChar => UserChar.UserId);
-
-            modelBuilder.Entity<User>()
-                .HasOne<Characteristic>(UserChar => UserChar.Characteristic)
-                .WithMany(Char => Char.UserCharacteristics)
-                .HasForeignKey(UserChar => UserChar.CharacteristicId);
+            
 
 
 

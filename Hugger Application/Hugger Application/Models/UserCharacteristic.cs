@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Hugger_Web_Application.Models
 {
-    public class User
+    public class UserCharacteristic
     {
         public string Value { get; set; }
         public int UserId { get; set; }
@@ -14,6 +14,6 @@ namespace Hugger_Web_Application.Models
         public int CharacteristicId { get; set; }
 
         public Characteristic Characteristic { get; set; }
-        
+
     }
 }
