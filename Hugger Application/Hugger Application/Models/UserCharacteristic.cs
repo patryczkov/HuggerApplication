@@ -10,7 +10,7 @@ namespace Hugger_Web_Application.Models
         public string Value { get; set; }
         public int UserId { get; set; }
 
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public int CharacteristicId { get; set; }
 
         public Characteristic Characteristic { get; set; }

@@ -17,6 +17,6 @@ namespace Hugger_Web_Application.Models
 
         [ForeignKey("Matches")]
         public int MatchId { get; set; }
-        public Match Match { get; set; }
+        public virtual Match Match { get; set; }
     }
 }
