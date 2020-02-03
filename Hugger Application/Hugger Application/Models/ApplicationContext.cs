@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hugger_Web_Application.Models;
 
 namespace Hugger_Web_Application.Models
 {
@@ -12,7 +13,7 @@ namespace Hugger_Web_Application.Models
         {
 
         }
-        public DbSet<UserCharacteristic> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<UserCharacteristic> Users_Characteristics { get; set; }
         public DbSet<Characteristic> Characteristics { get; set; }
 
@@ -76,6 +77,9 @@ namespace Hugger_Web_Application.Models
 
 
         }
+
+
+        public DbSet<Hugger_Web_Application.Models.User> User { get; set; }
 
     }
 }
