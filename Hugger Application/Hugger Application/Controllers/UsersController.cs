@@ -58,7 +58,7 @@ namespace Hugger_Application.Controllers
 
             try
             {
-                _userRepository.Save();
+                _userRepository.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -82,7 +82,7 @@ namespace Hugger_Application.Controllers
         public async Task<ActionResult<User>> PostUser(User user)
         {
             _userRepository.Create(user);
-            _userRepository.Save();
+            _userRepository.SaveChangesAsync();
 
             return CreatedAtAction("GetUser", new { id = user.UUID }, user);
         }
@@ -98,7 +98,7 @@ namespace Hugger_Application.Controllers
             }
 
             _userRepository.Delete(user);
-            _userRepository.Save();
+            _userRepository.SaveChangesAsync();
 
             return user;
         }

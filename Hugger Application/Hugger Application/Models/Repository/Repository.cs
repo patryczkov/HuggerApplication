@@ -1,6 +1,7 @@
 ﻿using Hugger_Web_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hugger_Application.Models.Repository
 {
@@ -33,9 +34,10 @@ namespace Hugger_Application.Models.Repository
         {
             ApplicationContext.Set<T>().Update(entity);
         }
-        public void Save()
+
+        public async Task<bool> SaveChangesAsync()
         {
-            ApplicationContext.SaveChanges();
+            return (await ApplicationContext.SaveChangesAsync()) > 0;
         }
-}
+    }
 }
