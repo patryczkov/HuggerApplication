@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hugger_Web_Application.Models;
 using Microsoft.Extensions.Configuration;
+using Hugger_Application.Data;
 
 namespace Hugger_Web_Application.Models
 {
@@ -94,5 +95,9 @@ namespace Hugger_Web_Application.Models
 
         public DbSet<Hugger_Web_Application.Models.User> User { get; set; }
 
+        public static implicit operator UserContext(UserContextFactory v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -12,8 +12,7 @@ namespace Hugger_Application.Data
     {
         public UserProfile()
         {
-            CreateMap<User, UserModel>()
-                .ForMember(usr => usr.LocalizationId, opt => opt.MapFrom(l => l.Localization.LocalizationName));
+            CreateMap<User, UserModel>();
         }
     }
 }

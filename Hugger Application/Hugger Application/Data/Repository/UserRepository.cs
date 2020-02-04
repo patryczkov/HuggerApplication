@@ -1,4 +1,5 @@
-﻿using Hugger_Web_Application.Models;
+﻿using Hugger_Application.Data;
+using Hugger_Web_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq;

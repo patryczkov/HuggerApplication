@@ -28,7 +28,7 @@ namespace Hugger_Application.Controllers
             _linkGenerator = linkGenerator;
         }
 
-        //when i am usin user model its fuckingup, but when i am using user it is ok
+
 
 
         [HttpGet]
@@ -62,21 +62,24 @@ namespace Hugger_Application.Controllers
             }
         }
         [HttpPost]
+
+
+        //can't add new user with this method, why? Connection pool is the problem?
         public async Task<ActionResult<UserModel>> Post(UserModel userModel)
         {
             try
             {
-                var existingUser = await _userRepository.GetUserByLoginAsync(userModel.Login);
-                if (existingUser != null) return BadRequest($"{userModel.Login} in use");
+                //var existingUser = await _userRepository.GetUserByLoginAsync(userModel.Login);
+                //if (existingUser != null) return BadRequest($"{userModel.Login} in use");
 
                 /*var location = _linkGenerator.GetPathByAction("Get",
                     "Users",
                     new { login = userModel.Login });
                 if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
-                */
-    
+                
+    */
                 var user = _mapper.Map<User>(userModel);
-                _userRepository.Update(user);
+                _userRepository.Create(user);
 
                 if (await _userRepository.SaveChangesAsync()) return Created("", _mapper.Map<UserModel>(user));
                 return Ok();
@@ -87,6 +90,36 @@ namespace Hugger_Application.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
+
+        }
+
+        [HttpPut("{userId:int}")]
+        public async Task<ActionResult<UserModel>> Put(int userId, UserModel userModel)
+        {
+            try
+            {
+                var exitingUser = await _userRepository.GetUserByIDAsync(userId);
+
+                if (exitingUser == null)
+                {
+                    return NotFound($"Could not find the user with id {userId}");
+                }
+
+                _mapper.Map(userModel, exitingUser);
+
+                if (await _userRepository.SaveChangesAsync())
+                {
+                    return _mapper.Map<UserModel>(exitingUser);
+                }
+
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Could not connect to database");
+            }
+
+            return BadRequest();
         }
     }
 }
+
