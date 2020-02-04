@@ -42,5 +42,21 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database"); 
             }
         }
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<User>> Get(int userId)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByIDAsync(userId);
+                if (user == null) return NotFound($"User with id= {userId} could not be found");
+
+                return _mapper.Map<User>(user);
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database");
+            }
+        }
     }
 }
