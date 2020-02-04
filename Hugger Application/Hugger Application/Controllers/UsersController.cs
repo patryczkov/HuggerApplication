@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Hugger_Web_Application.Models;
 using Hugger_Application.Models.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Routing;
 
 namespace Hugger_Application.Controllers
 {
@@ -17,14 +18,16 @@ namespace Hugger_Application.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly LinkGenerator _linkGenerator;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper)
+        public UsersController(IUserRepository userRepository, IMapper mapper, LinkGenerator linkGenerator)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _linkGenerator = linkGenerator;
         }
 
-        // GET: api/Users
+
         [HttpGet]
         public async Task<ActionResult<User[]>> GetUsers()
         {
@@ -36,7 +39,7 @@ namespace Hugger_Application.Controllers
             catch (Exception)
             {
 
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database"); 
             }
         }
     }

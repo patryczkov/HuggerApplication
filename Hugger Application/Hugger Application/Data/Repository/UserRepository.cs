@@ -11,17 +11,21 @@ namespace Hugger_Application.Models.Repository
         private readonly UserContext _userContext;
         private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(UserContext userContext, ILogger<UserRepository> logger) : base (userContext)
+        public UserRepository(UserContext userContext, ILogger<UserRepository> logger) : base(userContext)
         {
             _userContext = userContext;
             _logger = logger;
         }
 
-        public async Task<User[]> GetAllUsersAsync(bool includeHugs = false, bool includeMatches = false)
+        public async Task<User[]> GetAllUsersAsync(bool includeMatches = false)
         {
-            _logger.LogInformation("$Getting all users");
+            _logger.LogInformation($"Getting all users");
 
             IQueryable<User> usersQuery = _userContext.Users;
+
+            if (includeMatches) usersQuery = usersQuery.Include(usr => usr.Matches);
+
+            usersQuery = usersQuery.OrderBy(usr => usr.Id);
 
             return await usersQuery.ToArrayAsync();
 
@@ -33,9 +37,18 @@ namespace Hugger_Application.Models.Repository
             throw new System.NotImplementedException();
         }
 
-        public User GetUserByID(int userID)
+        public async Task<User> GetUserByIDAsync(int userID, bool includeMatches = false)
         {
-            throw new System.NotImplementedException();
+            _logger.LogInformation($"Getting an user for {userID}");
+
+            IQueryable<User> usersQuery = _userContext.Users;
+
+            if (includeMatches) usersQuery = usersQuery.Include(usr => usr.Matches);
+
+            usersQuery = usersQuery.Where(usr => usr.Id == userID);
+
+            return await usersQuery.FirstOrDefaultAsync();
         }
+
     }
 }
