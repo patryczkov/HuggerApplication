@@ -10,7 +10,7 @@ using Hugger_Application.Models.Repository;
 
 namespace Hugger_Application.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("hugger/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {

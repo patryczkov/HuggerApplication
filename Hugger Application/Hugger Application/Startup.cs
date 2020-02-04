@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Hugger_Application.Models.Repository;
 using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Builder;
@@ -29,8 +30,11 @@ namespace Hugger_Application
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("HuggerContext")));
             services.AddTransient<IUserRepository, UserRepository>();
+
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddControllers();
         }
 
