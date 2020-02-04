@@ -28,19 +28,21 @@ namespace Hugger_Application.Controllers
             _linkGenerator = linkGenerator;
         }
 
+        //when i am usin user model its fuckingup, but when i am using user it is ok
+
 
         [HttpGet]
-        public async Task<ActionResult<User[]>> GetUsers()
+        public async Task<ActionResult<UserModel[]>> GetUsers()
         {
             try
             {
                 var users = await _userRepository.GetAllUsersAsync();
-                return _mapper.Map<User[]>(users);
+                return _mapper.Map<UserModel[]>(users);
             }
             catch (Exception)
             {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
         }
         [HttpGet("{userId}")]
@@ -56,7 +58,7 @@ namespace Hugger_Application.Controllers
             catch (Exception)
             {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
         }
         [HttpPost]
@@ -67,14 +69,14 @@ namespace Hugger_Application.Controllers
                 var existingUser = await _userRepository.GetUserByLoginAsync(userModel.Login);
                 if (existingUser != null) return BadRequest($"{userModel.Login} in use");
 
-               // var location = _linkGenerator.GetPathByAction("Get",
-                //    "users",
-                 //   new { login = userModel.Login });
-                //if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
-
+                /*var location = _linkGenerator.GetPathByAction("Get",
+                    "Users",
+                    new { login = userModel.Login });
+                if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
+                */
     
                 var user = _mapper.Map<User>(userModel);
-                _userRepository.Create(user);
+                _userRepository.Update(user);
 
                 if (await _userRepository.SaveChangesAsync()) return Created("", _mapper.Map<UserModel>(user));
                 return Ok();
@@ -83,7 +85,7 @@ namespace Hugger_Application.Controllers
             catch (Exception)
             {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
         }
     }

@@ -4,23 +4,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hugger_Web_Application.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace Hugger_Web_Application.Models
 {
     public class UserContext : DbContext
     {
-        public UserContext(DbContextOptions<UserContext> options ) : base(options)
-        {
+        private readonly IConfiguration _configuration;
 
+        public UserContext(DbContextOptions<UserContext> options, IConfiguration configuration) : base(options)
+        {
+            _configuration = configuration;
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder contextOptionsBuilder)
+        {
+            contextOptionsBuilder.UseSqlServer(_configuration.GetConnectionString("HuggerContext"));
+        }
+
+
+
         public DbSet<User> Users { get; set; }
         public DbSet<UserCharacteristic> Users_Characteristics { get; set; }
         public DbSet<Characteristic> Characteristics { get; set; }
 
-        internal Task<IQueryable<object>> ToArrayAsync()
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public DbSet<Localization> Localizations { get; set; }
         public DbSet<Preference> Preferences { get; set; }
