@@ -22,17 +22,17 @@ namespace Hugger_Application.Models.Repository
 
         public void Create(T entity)
         {
-            _userContext.Set<T>().Add(entity);
+            _userContext.Add(entity);
         }
 
         public void Delete(T entity)
         {
-            _userContext.Set<T>().Remove(entity);
+            _userContext.Remove(entity);
         }
 
         public void Update(T entity)
         {
-            _userContext.Set<T>().Update(entity);
+            _userContext.Update(entity);
         }
 
         public async Task<bool> SaveChangesAsync()

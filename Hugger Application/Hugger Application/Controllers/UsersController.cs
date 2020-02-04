@@ -9,6 +9,7 @@ using Hugger_Web_Application.Models;
 using Hugger_Application.Models.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Routing;
+using Hugger_Application.Models;
 
 namespace Hugger_Application.Controllers
 {
@@ -39,18 +40,45 @@ namespace Hugger_Application.Controllers
             catch (Exception)
             {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database"); 
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database");
             }
         }
         [HttpGet("{userId}")]
-        public async Task<ActionResult<User>> Get(int userId)
+        public async Task<ActionResult<UserModel>> Get(int userId)
         {
             try
             {
                 var user = await _userRepository.GetUserByIDAsync(userId);
                 if (user == null) return NotFound($"User with id= {userId} could not be found");
 
-                return _mapper.Map<User>(user);
+                return _mapper.Map<UserModel>(user);
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contect to database");
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult<UserModel>> Post(UserModel userModel)
+        {
+            try
+            {
+                var existingUser = await _userRepository.GetUserByLoginAsync(userModel.Login);
+                if (existingUser != null) return BadRequest($"{userModel.Login} in use");
+
+               // var location = _linkGenerator.GetPathByAction("Get",
+                //    "users",
+                 //   new { login = userModel.Login });
+                //if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
+
+    
+                var user = _mapper.Map<User>(userModel);
+                _userRepository.Create(user);
+
+                if (await _userRepository.SaveChangesAsync()) return Created("", _mapper.Map<UserModel>(user));
+                return Ok();
+
             }
             catch (Exception)
             {

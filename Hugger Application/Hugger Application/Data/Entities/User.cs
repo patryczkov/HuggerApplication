@@ -9,9 +9,9 @@ namespace Hugger_Web_Application.Models
 {
     public class User
     {
-        public int Id { get; set; }
         [Key]
-        public int UUID { get; set; }
+        public int Id { get; set; }
+
         public string Login  { get; set; }
         public string Password { get; set; }
         public  string FolderPath { get; set; }

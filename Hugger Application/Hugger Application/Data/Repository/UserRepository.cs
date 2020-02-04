@@ -32,7 +32,7 @@ namespace Hugger_Application.Models.Repository
 
         }
 
-        public async Task<User[]> GetAllUsersByLocalizationID(bool includeLocalization = false)
+        public Task<User[]> GetAllUsersByLocalizationIDAsync(bool includeLocalization = false)
         {
             throw new System.NotImplementedException();
         }
@@ -50,5 +50,15 @@ namespace Hugger_Application.Models.Repository
             return await usersQuery.FirstOrDefaultAsync();
         }
 
+        public async Task<User> GetUserByLoginAsync(string login)
+        {
+            _logger.LogInformation($"Getting an user for {login}");
+
+            IQueryable<User> usersQuery = _userContext.Users;
+
+            usersQuery = usersQuery.Where(usr => usr.Login == login);
+
+            return await usersQuery.FirstOrDefaultAsync();
+        }
     }
 }

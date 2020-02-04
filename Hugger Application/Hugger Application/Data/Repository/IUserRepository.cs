@@ -8,6 +8,7 @@ namespace Hugger_Application.Models.Repository
         Task<User[]> GetAllUsersAsync(bool includeMatches=false);
         Task<User> GetUserByIDAsync(int userID, bool includeMatches = false);
 
-        Task<User[]> GetAllUsersByLocalizationID(bool includeLocalization = false);
+        Task<User[]> GetAllUsersByLocalizationIDAsync(bool includeLocalization = false);
+        Task<User> GetUserByLoginAsync(string login);
     }
 }
