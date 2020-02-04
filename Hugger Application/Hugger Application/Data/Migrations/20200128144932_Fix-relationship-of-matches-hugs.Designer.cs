@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hugger_Application.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
-    [Migration("20200128144734_Improve-of-relations")]
-    partial class Improveofrelations
+    [DbContext(typeof(UserContext))]
+    [Migration("20200128144932_Fix-relationship-of-matches-hugs")]
+    partial class Fixrelationshipofmatcheshugs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -79,12 +79,6 @@ namespace Hugger_Application.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("HugUserUUIDReceiver")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("HugUserUUIDSender")
-                        .HasColumnType("int");
-
                     b.Property<string>("MatchDate")
                         .HasColumnType("nvarchar(max)");
 
@@ -100,8 +94,6 @@ namespace Hugger_Application.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserUUID");
-
-                    b.HasIndex("HugUserUUIDSender", "HugUserUUIDReceiver");
 
                     b.ToTable("Matches");
                 });
@@ -223,10 +215,6 @@ namespace Hugger_Application.Migrations
                     b.HasOne("Hugger_Web_Application.Models.User", "User")
                         .WithMany("Matches")
                         .HasForeignKey("UserUUID");
-
-                    b.HasOne("Hugger_Web_Application.Models.Hug", null)
-                        .WithMany("Matches")
-                        .HasForeignKey("HugUserUUIDSender", "HugUserUUIDReceiver");
                 });
 
             modelBuilder.Entity("Hugger_Web_Application.Models.Message", b =>

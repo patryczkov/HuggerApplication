@@ -7,37 +7,37 @@ namespace Hugger_Application.Models.Repository
 {
     public abstract class Repository<T> : IRepository<T> where T : class
     {
-        //private readonly IUnitOfWork _unitOfWork;
-        ApplicationContext ApplicationContext;
+        private readonly UserContext _userContext;
 
-        public Repository(ApplicationContext applicationContext)
+  
+        public Repository(UserContext userContext)
         {
-            ApplicationContext = applicationContext;
+            _userContext = userContext;
         }
 
         public IQueryable<T> FindAll()
         {
-            return ApplicationContext.Set<T>().AsNoTracking();
+            return _userContext.Set<T>().AsNoTracking();
         }
 
         public void Create(T entity)
         {
-            ApplicationContext.Set<T>().Add(entity);
+            _userContext.Set<T>().Add(entity);
         }
 
         public void Delete(T entity)
         {
-            ApplicationContext.Set<T>().Remove(entity);
+            _userContext.Set<T>().Remove(entity);
         }
 
         public void Update(T entity)
         {
-            ApplicationContext.Set<T>().Update(entity);
+            _userContext.Set<T>().Update(entity);
         }
 
         public async Task<bool> SaveChangesAsync()
         {
-            return (await ApplicationContext.SaveChangesAsync()) > 0;
+            return (await _userContext.SaveChangesAsync()) > 0;
         }
     }
 }

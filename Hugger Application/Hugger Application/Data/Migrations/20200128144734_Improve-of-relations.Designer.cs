@@ -4,14 +4,16 @@ using Hugger_Web_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hugger_Application.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(UserContext))]
+    [Migration("20200128144734_Improve-of-relations")]
+    partial class Improveofrelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,6 +79,12 @@ namespace Hugger_Application.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("HugUserUUIDReceiver")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HugUserUUIDSender")
+                        .HasColumnType("int");
+
                     b.Property<string>("MatchDate")
                         .HasColumnType("nvarchar(max)");
 
@@ -92,6 +100,8 @@ namespace Hugger_Application.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserUUID");
+
+                    b.HasIndex("HugUserUUIDSender", "HugUserUUIDReceiver");
 
                     b.ToTable("Matches");
                 });
@@ -213,6 +223,10 @@ namespace Hugger_Application.Migrations
                     b.HasOne("Hugger_Web_Application.Models.User", "User")
                         .WithMany("Matches")
                         .HasForeignKey("UserUUID");
+
+                    b.HasOne("Hugger_Web_Application.Models.Hug", null)
+                        .WithMany("Matches")
+                        .HasForeignKey("HugUserUUIDSender", "HugUserUUIDReceiver");
                 });
 
             modelBuilder.Entity("Hugger_Web_Application.Models.Message", b =>
