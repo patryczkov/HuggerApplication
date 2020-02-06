@@ -4,14 +4,16 @@ using Hugger_Web_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hugger_Application.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(UserContext))]
+    [Migration("20200206152530_Initial-migration-fix")]
+    partial class Initialmigrationfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,18 +38,18 @@ namespace Hugger_Application.Migrations
 
             modelBuilder.Entity("Hugger_Web_Application.Models.Hug", b =>
                 {
-                    b.Property<int>("UserUUIDSender")
+                    b.Property<int>("UserIDSender")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserUUIDReceiver")
+                    b.Property<int>("UserIDReceiver")
                         .HasColumnType("int");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.HasKey("UserUUIDSender", "UserUUIDReceiver");
+                    b.HasKey("UserIDSender", "UserIDReceiver");
 
-                    b.HasIndex("UserUUIDReceiver");
+                    b.HasIndex("UserIDReceiver");
 
                     b.ToTable("Hugs");
                 });
@@ -80,18 +82,18 @@ namespace Hugger_Application.Migrations
                     b.Property<string>("MatchDate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserUUID")
+                    b.Property<int>("UserIDReceiver")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserUUIDReceiver")
+                    b.Property<int>("UserIDSender")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserUUIDSender")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserUUID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Matches");
                 });
@@ -136,16 +138,13 @@ namespace Hugger_Application.Migrations
 
             modelBuilder.Entity("Hugger_Web_Application.Models.User", b =>
                 {
-                    b.Property<int>("UUID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("FolderPath")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
 
                     b.Property<int>("LastWatchedUserId")
                         .HasColumnType("int");
@@ -159,7 +158,7 @@ namespace Hugger_Application.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.HasIndex("LocalizationId");
 
@@ -181,7 +180,7 @@ namespace Hugger_Application.Migrations
 
                     b.HasIndex("CharacteristicId");
 
-                    b.ToTable("UserCharacteristic");
+                    b.ToTable("Users_Characteristics");
                 });
 
             modelBuilder.Entity("Hugger_Web_Application.Models.UserPreference", b =>
@@ -203,7 +202,7 @@ namespace Hugger_Application.Migrations
                 {
                     b.HasOne("Hugger_Web_Application.Models.User", "User")
                         .WithMany("Hugs")
-                        .HasForeignKey("UserUUIDReceiver")
+                        .HasForeignKey("UserIDReceiver")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -212,7 +211,7 @@ namespace Hugger_Application.Migrations
                 {
                     b.HasOne("Hugger_Web_Application.Models.User", "User")
                         .WithMany("Matches")
-                        .HasForeignKey("UserUUID");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Hugger_Web_Application.Models.Message", b =>

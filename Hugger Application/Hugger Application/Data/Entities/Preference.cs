@@ -11,6 +11,6 @@ namespace Hugger_Web_Application.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<UserPreference> UsersPreferences { get; set; }
+        public virtual ICollection<UserPreference> UsersPreferences { get; set; }
     }
 }
