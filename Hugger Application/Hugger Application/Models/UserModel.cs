@@ -9,12 +9,13 @@ namespace Hugger_Application.Models
     public class UserModel
     {
         [Required]
-      
+        [StringLength(30, MinimumLength = 3)]
         public string Login { get; set; }
         [Required]
-        
+        [StringLength(30, MinimumLength = 3)]
         public string Password { get; set; }
         [Required]
+        [StringLength(200, MinimumLength = 3)]
         public string FolderPath { get; set; }
         public int LastWatchedUserId { get; set; }
         public int LocalizationId { get; set; }

@@ -61,14 +61,13 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
         }
-        [HttpPost]
 
+        [HttpPost]
 
         //can't add new user with this method, why? Connection pool is the problem?
         public async Task<ActionResult<UserModel>> Post(UserModel userModel)
         {
-            try
-            {
+            
                 //var existingUser = await _userRepository.GetUserByLoginAsync(userModel.Login);
                 //if (existingUser != null) return BadRequest($"{userModel.Login} in use");
 
@@ -84,14 +83,11 @@ namespace Hugger_Application.Controllers
                 if (await _userRepository.SaveChangesAsync()) return Created("", _mapper.Map<UserModel>(user));
                 return Ok();
 
-            }
-            catch (Exception)
-            {
-
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
-            }
-
+            
+           
+ 
         }
+        //this one also not working
 
         [HttpPut("{userId:int}")]
         public async Task<ActionResult<UserModel>> Put(int userId, UserModel userModel)
@@ -119,6 +115,24 @@ namespace Hugger_Application.Controllers
             }
 
             return BadRequest();
+        }
+        [HttpDelete]
+        public async Task<ActionResult<UserModel>> Delete(int userId)
+        {
+            try
+            {
+                var oldUser = await _userRepository.GetUserByIDAsync(userId);
+                if (oldUser == null) return NotFound($"Could not find an user with id= {userId}");
+
+                _userRepository.Delete(oldUser);
+                if (await _userRepository.SaveChangesAsync()) return Ok();
+            }
+            catch (Exception)
+            {
+
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Could not connect to database");
+            }
+            return BadRequest("Failed to delete user");
         }
     }
 }
