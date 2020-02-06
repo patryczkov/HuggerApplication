@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Hugger_Web_Application.Models;
-using Hugger_Application.Models.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Routing;
 using Hugger_Application.Models;
+using Hugger_Application.Models.Repository;
+using Hugger_Web_Application.Models;
 
 namespace Hugger_Application.Controllers
 {
@@ -63,6 +63,7 @@ namespace Hugger_Application.Controllers
         }
 
         [HttpPost]
+        //TODO try/catch formula
 
         //can't add new user with this method, why? Connection pool is the problem?
         public async Task<ActionResult<UserModel>> Post(UserModel userModel)

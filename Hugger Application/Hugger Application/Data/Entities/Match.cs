@@ -16,8 +16,8 @@ namespace Hugger_Web_Application.Models
         public int UserUUIDSender { get; set; }
         [ForeignKey("Users")]
         public int UserUUIDReceiver { get; set; }
-        public  User User { get; set; }
-        public ICollection<Message> Messages { get; set; }
+        public virtual User User { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
 
 
     }

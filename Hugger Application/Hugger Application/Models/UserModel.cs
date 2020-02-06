@@ -8,6 +8,7 @@ namespace Hugger_Application.Models
 {
     public class UserModel
     {
+        public int UserId { get; set; }
         [Required]
         [StringLength(30, MinimumLength = 3)]
         public string Login { get; set; }
@@ -20,6 +21,5 @@ namespace Hugger_Application.Models
         public int LastWatchedUserId { get; set; }
         public int LocalizationId { get; set; }
 
-        public string LocalizationName { get; set; }
     }
 }
