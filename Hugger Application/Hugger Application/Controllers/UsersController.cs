@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Hugger_Web_Application.Models;
+using Hugger_Application.Models.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Routing;
 using Hugger_Application.Models;
-using Hugger_Application.Models.Repository;
-using Hugger_Web_Application.Models;
 
 namespace Hugger_Application.Controllers
 {
@@ -63,29 +63,37 @@ namespace Hugger_Application.Controllers
         }
 
         [HttpPost]
-        //TODO try/catch formula
 
         //can't add new user with this method, why? Connection pool is the problem?
         public async Task<ActionResult<UserModel>> Post(UserModel userModel)
         {
-            
-                //var existingUser = await _userRepository.GetUserByLoginAsync(userModel.Login);
-                //if (existingUser != null) return BadRequest($"{userModel.Login} in use");
+            try
+            {
+                var existingUser = await _userRepository.GetUserByLoginAsync(userModel.Login);
+                if (existingUser != null) return BadRequest($"{userModel.Login} in use");
 
-                /*var location = _linkGenerator.GetPathByAction("Get",
+                existingUser = await _userRepository.GetUserByIDAsync(userModel.UserId);
+                if (existingUser != null) return BadRequest($"{userModel.UserId} in use");
+
+
+               /* var location = _linkGenerator.GetPathByAction("Get",
                     "Users",
                     new { login = userModel.Login });
                 if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
-                
-    */
+                */
+    
                 var user = _mapper.Map<User>(userModel);
                 _userRepository.Create(user);
 
                 if (await _userRepository.SaveChangesAsync()) return Created("", _mapper.Map<UserModel>(user));
                 return Ok();
 
-            
-           
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
+            }
  
         }
         //this one also not working

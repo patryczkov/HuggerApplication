@@ -45,12 +45,12 @@ namespace Hugger_Web_Application.Models
             modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new { UserChar.UserId, UserChar.CharacteristicId });
 
             modelBuilder.Entity<UserCharacteristic>()
-                .HasOne<User>(UserChar => UserChar.User)
+                .HasOne(UserChar => UserChar.User)
                 .WithMany(Usr => Usr.UserCharacteristics)
                 .HasForeignKey(UserChar => UserChar.UserId);
 
             modelBuilder.Entity<UserCharacteristic>()
-                .HasOne<Characteristic>(UserChar => UserChar.Characteristic)
+                .HasOne(UserChar => UserChar.Characteristic)
                 .WithMany(Char => Char.UserCharacteristics)
                 .HasForeignKey(UserChar => UserChar.CharacteristicId);
 
@@ -58,27 +58,27 @@ namespace Hugger_Web_Application.Models
             modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.UserId, UserPref.PreferenceId });
 
             modelBuilder.Entity<UserPreference>()
-                .HasOne<User>(UserPref => UserPref.User)
+                .HasOne(UserPref => UserPref.User)
                 .WithMany(Usr => Usr.UsersPreferences)
                 .HasForeignKey(UserPref => UserPref.UserId);
 
             modelBuilder.Entity<UserPreference>()
-                .HasOne<Preference>(UserPref => UserPref.Preference)
+                .HasOne(UserPref => UserPref.Preference)
                 .WithMany(Pref => Pref.UsersPreferences)
                 .HasForeignKey(UserPref => UserPref.PreferenceId);
 
             //join table User - Match (Hugs)
-            modelBuilder.Entity<Hug>().HasKey(Hg => new { Hg.UserUUIDSender, Hg.UserUUIDReceiver });
+            modelBuilder.Entity<Hug>().HasKey(Hg => new { Hg.UserIDSender, Hg.UserIDReceiver });
 
             modelBuilder.Entity<Hug>()
-                .HasOne<User>(Hg => Hg.User)
+                .HasOne(Hg => Hg.User)
                 .WithMany(Usr => Usr.Hugs)
-                .HasForeignKey(Hg => Hg.UserUUIDSender);
+                .HasForeignKey(Hg => Hg.UserIDSender);
 
             modelBuilder.Entity<Hug>()
-                .HasOne<User>(Hg => Hg.User)
+                .HasOne(Hg => Hg.User)
                 .WithMany(Usr => Usr.Hugs)
-                .HasForeignKey(Hg => Hg.UserUUIDReceiver);
+                .HasForeignKey(Hg => Hg.UserIDReceiver);
 
 
 

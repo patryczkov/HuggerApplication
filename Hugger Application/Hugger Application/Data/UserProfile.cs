@@ -12,7 +12,9 @@ namespace Hugger_Application.Data
     {
         public UserProfile()
         {
-            CreateMap<User, UserModel>();
+            CreateMap<User, UserModel>()
+                .ReverseMap();
+
         }
     }
 }

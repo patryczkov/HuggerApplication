@@ -11,7 +11,6 @@ namespace Hugger_Web_Application.Models
     {
         [Key]
         public int Id { get; set; }
-
         public string Login  { get; set; }
         public string Password { get; set; }
         public  string FolderPath { get; set; }
