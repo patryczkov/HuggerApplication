@@ -64,7 +64,7 @@ namespace Hugger_Application.Controllers
 
         [HttpPost]
 
-        //can't add new user with this method, why? Connection pool is the problem?
+        //linkgenerator not working yet
         public async Task<ActionResult<UserModel>> Post(UserModel userModel)
         {
             try
@@ -96,7 +96,7 @@ namespace Hugger_Application.Controllers
             }
  
         }
-        //this one also not working
+       
 
         [HttpPut("{userId:int}")]
         public async Task<ActionResult<UserModel>> Put(int userId, UserModel userModel)
