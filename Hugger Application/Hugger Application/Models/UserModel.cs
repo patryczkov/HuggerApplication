@@ -8,7 +8,7 @@ namespace Hugger_Application.Models
 {
     public class UserModel
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(30, MinimumLength = 3)]
         public string Login { get; set; }

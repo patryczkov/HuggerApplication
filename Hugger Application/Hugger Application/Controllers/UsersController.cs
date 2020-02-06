@@ -72,8 +72,8 @@ namespace Hugger_Application.Controllers
                 var existingUser = await _userRepository.GetUserByLoginAsync(userModel.Login);
                 if (existingUser != null) return BadRequest($"{userModel.Login} in use");
 
-                existingUser = await _userRepository.GetUserByIDAsync(userModel.UserId);
-                if (existingUser != null) return BadRequest($"{userModel.UserId} in use");
+                existingUser = await _userRepository.GetUserByIDAsync(userModel.Id);
+                if (existingUser != null) return BadRequest($"{userModel.Id} in use");
 
 
                /* var location = _linkGenerator.GetPathByAction("Get",
@@ -125,7 +125,7 @@ namespace Hugger_Application.Controllers
 
             return BadRequest();
         }
-        [HttpDelete]
+        [HttpDelete("{userId:int}")]
         public async Task<ActionResult<UserModel>> Delete(int userId)
         {
             try
