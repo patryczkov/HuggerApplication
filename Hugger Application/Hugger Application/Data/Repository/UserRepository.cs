@@ -66,7 +66,7 @@ namespace Hugger_Application.Models.Repository
 
             return await usersQuery.FirstOrDefaultAsync();
         }
-        public async Task<User> Authenticate(string login, string password)
+        public async Task<User> AuthenticateAsync(string login, string password)
         {
             _logger.LogInformation($"Looking for user with login {login}");
 
@@ -77,7 +77,7 @@ namespace Hugger_Application.Models.Repository
 
             var tokenHandler = new JwtSecurityTokenHandler();
             //TODO move it into appsettings
-            var key = Encoding.ASCII.GetBytes("Hagrid13.");
+            var key = Encoding.ASCII.GetBytes("hagrid13lubimaledzieci5");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -87,6 +87,11 @@ namespace Hugger_Application.Models.Repository
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            user.Token = tokenHandler.WriteToken(token);
+
+            return user;
         }
+
     }
 }

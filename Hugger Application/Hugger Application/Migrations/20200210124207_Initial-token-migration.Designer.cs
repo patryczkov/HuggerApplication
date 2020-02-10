@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hugger_Application.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20200206152116_Initial-migration")]
-    partial class Initialmigration
+    [Migration("20200210124207_Initial-token-migration")]
+    partial class Initialtokenmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -143,6 +143,15 @@ namespace Hugger_Application.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("BirthYear")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FolderPath")
                         .HasColumnType("nvarchar(max)");
 
@@ -156,6 +165,9 @@ namespace Hugger_Application.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -190,6 +202,9 @@ namespace Hugger_Application.Migrations
 
                     b.Property<int>("PreferenceId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "PreferenceId");
 
