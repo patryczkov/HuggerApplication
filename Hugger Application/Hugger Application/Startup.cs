@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Hugger_Application.Models.Repository;
 using Hugger_Web_Application.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -38,6 +39,14 @@ namespace Hugger_Application
             services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
+
+
+            var key = Encoding.ASCII.GetBytes("Hagrid13.");
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
