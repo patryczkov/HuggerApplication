@@ -10,9 +10,11 @@ using Hugger_Application.Models.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Routing;
 using Hugger_Application.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hugger_Application.Controllers
 {
+    [Authorize]
     [Route("hugger/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -28,7 +30,21 @@ namespace Hugger_Application.Controllers
             _linkGenerator = linkGenerator;
         }
 
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<ActionResult<AuthenticateUserModel>> Authenticate(AuthenticateUserModel userModel)
+        {
+            var user = await _userRepository.Authenticate(userModel.Login, userModel.Password);
+            if (user == null) return BadRequest("Username or password is not correct");
 
+            return Ok(user);
+        }
+
+
+
+
+
+        
 
 
         [HttpGet]
