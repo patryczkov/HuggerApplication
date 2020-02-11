@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Hugger_Application.Helpers;
 using Hugger_Application.Models.Repository;
+using Hugger_Application.Services;
 using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,7 @@ namespace Hugger_Application
 
             services.AddDbContext<UserContext>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
 
             services.Configure<AppSettings>(appSettingSection);
             var appSettings = appSettingSection.Get<AppSettings>();
@@ -50,7 +52,7 @@ namespace Hugger_Application
             services.AddControllers();
 
 
-            var key = Encoding.ASCII.GetBytes("hagrid13lubimaledzieci5");
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

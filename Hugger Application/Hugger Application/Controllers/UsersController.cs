@@ -22,14 +22,14 @@ namespace Hugger_Application.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        //private readonly IUserService _userService;
+        private readonly IUserService _userService;
         private readonly LinkGenerator _linkGenerator;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper, LinkGenerator linkGenerator)
+        public UsersController(IUserRepository userRepository, IMapper mapper, LinkGenerator linkGenerator, IUserService userService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
-            //_userService = userService;
+            _userService = userService;
             _linkGenerator = linkGenerator;
         }
 
@@ -37,7 +37,7 @@ namespace Hugger_Application.Controllers
         [HttpPost("authenticate")]
         public async Task<ActionResult<UserModel>> Authenticate(AuthenticateUserModel authenticateUserModel)
         {
-            var user = await _userRepository.AuthenticateAsync(authenticateUserModel.Login, authenticateUserModel.Password);
+            var user = await  _userService.AuthenticateAsync(authenticateUserModel.Login, authenticateUserModel.Password);
             if (user == null) return BadRequest("Username or password is not correct");
 
             return _mapper.Map<UserModel>(user);

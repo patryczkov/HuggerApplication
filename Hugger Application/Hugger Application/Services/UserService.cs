@@ -1,6 +1,8 @@
-﻿using Hugger_Web_Application.Models;
+﻿using Hugger_Application.Helpers;
+using Hugger_Web_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -16,41 +18,50 @@ namespace Hugger_Application.Services
     {
         private readonly UserContext _userContext;
         private readonly ILogger<UserService> _logger;
+        private readonly AppSettings _appstettings;
 
-
-        public UserService(UserContext userContext, ILogger<UserService> logger)
+        public UserService(UserContext userContext, ILogger<UserService> logger, IOptions<AppSettings> appSetings)
         {
             _userContext = userContext;
             _logger = logger;
+            _appstettings = appSetings.Value;
         }
-        
-        
-        
+
+
+
         public async Task<User> AuthenticateAsync(string login, string password)
         {
+            JwtSecurityTokenHandler tokenHandler;
+            SecurityToken token;
+            
             _logger.LogInformation($"Looking for user with login {login}");
-
+            //finding users
             IQueryable<User> usersQuery = _userContext.Users;
+            var currentUser = await usersQuery.SingleOrDefaultAsync(usr => usr.Login == login && usr.Password == password);
+            if (currentUser == null) return null;
 
-            var user = await usersQuery.SingleOrDefaultAsync(usr => usr.Login == login && usr.Password == password);
-            if (user == null) return null;
+            GenerateToken(currentUser, out tokenHandler, out token);
+            
+            currentUser.Token = tokenHandler.WriteToken(token);
+            _userContext.SaveChanges();
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            //TODO move it into appsettings
-            var key = Encoding.ASCII.GetBytes("hagrid13lubimaledzieci5");
+            return currentUser;
+        }
+
+        private void GenerateToken(User currentUser, out JwtSecurityTokenHandler tokenHandler, out SecurityToken token)
+        {
+            tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appstettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, currentUser.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.Token = tokenHandler.WriteToken(token);
-
-            return user;
+            token = tokenHandler.CreateToken(tokenDescriptor);
         }
     }
 }
