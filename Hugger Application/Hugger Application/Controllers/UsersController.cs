@@ -10,25 +10,38 @@ using Hugger_Application.Models.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Routing;
 using Hugger_Application.Models;
+using Microsoft.AspNetCore.Authorization;
+using Hugger_Application.Services;
 
 namespace Hugger_Application.Controllers
 {
+    [Authorize]
     [Route("hugger/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
         private readonly LinkGenerator _linkGenerator;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper, LinkGenerator linkGenerator)
+        public UsersController(IUserRepository userRepository, IMapper mapper, LinkGenerator linkGenerator, IUserService userService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _userService = userService;
             _linkGenerator = linkGenerator;
         }
 
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<ActionResult<UserModel>> Authenticate(AuthenticateUserModel authenticateUserModel)
+        {
+            var user = await  _userService.AuthenticateAsync(authenticateUserModel.Login, authenticateUserModel.Password);
+            if (user == null) return BadRequest("Username or password is not correct");
 
+            return _mapper.Map<UserModel>(user);
+        }
 
 
         [HttpGet]
@@ -76,12 +89,12 @@ namespace Hugger_Application.Controllers
                 if (existingUser != null) return BadRequest($"{userModel.Id} in use");
 
 
-               /* var location = _linkGenerator.GetPathByAction("Get",
-                    "Users",
-                    new { login = userModel.Login });
-                if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
-                */
-    
+                /* var location = _linkGenerator.GetPathByAction("Get",
+                     "Users",
+                     new { login = userModel.Login });
+                 if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
+                 */
+
                 var user = _mapper.Map<User>(userModel);
                 _userRepository.Create(user);
 
@@ -94,9 +107,9 @@ namespace Hugger_Application.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
- 
+
         }
-       
+
 
         [HttpPut("{userId:int}")]
         public async Task<ActionResult<UserModel>> Put(int userId, UserModel userModel)

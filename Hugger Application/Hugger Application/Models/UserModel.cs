@@ -20,6 +20,7 @@ namespace Hugger_Application.Models
         public string FolderPath { get; set; }
         public int LastWatchedUserId { get; set; }
         public int LocalizationId { get; set; }
+        public string Token { get; set; }
 
     }
 }

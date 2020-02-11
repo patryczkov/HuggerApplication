@@ -19,7 +19,11 @@ namespace Hugger_Web_Application.Models
         public int LocalizationId { get; set; }
         
         public virtual Localization Localization { get; set; }
-        
+
+        public string Token { get; set; }
+        public string Email { get; set; }
+        public string Description { get; set; }
+        public string BirthYear { get; set; }
 
         public virtual ICollection<UserCharacteristic> UserCharacteristics { get; set; }
         public virtual ICollection<UserPreference> UsersPreferences { get; set; }

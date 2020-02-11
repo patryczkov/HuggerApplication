@@ -2,7 +2,7 @@
 
 namespace Hugger_Application.Migrations
 {
-    public partial class Initialmigration : Migration
+    public partial class Initialtokenmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -56,7 +56,11 @@ namespace Hugger_Application.Migrations
                     Password = table.Column<string>(nullable: true),
                     FolderPath = table.Column<string>(nullable: true),
                     LastWatchedUserId = table.Column<int>(nullable: false),
-                    LocalizationId = table.Column<int>(nullable: false)
+                    LocalizationId = table.Column<int>(nullable: false),
+                    Token = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    BirthYear = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -140,7 +144,8 @@ namespace Hugger_Application.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false),
-                    PreferenceId = table.Column<int>(nullable: false)
+                    PreferenceId = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
