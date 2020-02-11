@@ -104,24 +104,23 @@ export default class App extends Component {
 
             if (i < this.state.currentIndex) {
                 return null
-            }
-            else if (i == this.state.currentIndex) {
+            } else if (i == this.state.currentIndex) {
 
                 return (
                     <Animated.View
                         {...this.PanResponder.panHandlers}
-                        key={item.id} style={[this.rotateAndTranslate, { height: height - 120, width: width, padding: 10, position: 'absolute' }]}>
+                        key={item.id} style={[this.rotateAndTranslate, { height: height - 150, width: width, padding: 5, position: 'absolute' }]}>
 
                         <View style={{ position: 'absolute', top: 500, zIndex: 1000 }}>
                             <Text style={styles.titleText}>{item.name}, {item.age}</Text>
                         </View>
 
                         <Animated.View style={{ opacity: this.likeOpacity, position: 'absolute', top: 100, right: 100, zIndex: 1000 }}>
-                            <Text style={{ borderWidth: 2, borderColor: 'green', color: 'green', fontSize: 45, fontWeight: 'bold', padding: 10 }}>FUCK</Text>
+                            <Text style={{ borderWidth: 2, borderColor: 'green', color: 'green', fontSize: 45, fontWeight: 'bold', padding: 10 }}>LIKE</Text>
                         </Animated.View>
 
                         <Animated.View style={{ opacity: this.dislikeOpacity, position: 'absolute', top: 470, right: 100, zIndex: 1000 }}>
-                            <Text style={{ borderWidth: 2, borderColor: 'red', color: 'red', fontSize: 32, fontWeight: 'bold', padding: 10 }}>FUCK OFF</Text>
+                            <Text style={{ borderWidth: 2, borderColor: 'red', color: 'red', fontSize: 32, fontWeight: 'bold', padding: 10 }}>NOPE</Text>
                         </Animated.View>
 
                         <Image
@@ -130,11 +129,11 @@ export default class App extends Component {
 
                     </Animated.View>
                 )
-            }
-            else {
+            } else {
                 return (
-                    <Animated.View
 
+                    <Animated.View
+                        {...this.PanResponder.panHandlers}
                         key={item.id} style={[{
                             opacity: this.nextCardOpacity,
                             transform: [{ scale: this.nextCardScale }],
@@ -146,12 +145,12 @@ export default class App extends Component {
                         </View>
 
                         <Animated.View style={{ opacity: 0, transform: [{ rotate: '-30deg' }], position: 'absolute', top: 150, right: 150, zIndex: 1000 }}>
-                            <Text style={{ borderWidth: 2, borderColor: 'green', color: 'green', fontSize: 45, fontWeight: 'bold', padding: 10 }}>FUCK</Text>
+                            <Text style={{ borderWidth: 2, borderColor: 'green', color: 'green', fontSize: 45, fontWeight: 'bold', padding: 10 }}>LIKE</Text>
 
                         </Animated.View>
 
                         <Animated.View style={{ opacity: 0, transform: [{ rotate: '30deg' }], position: 'absolute', top: 470, right: 100, zIndex: 1000 }}>
-                            <Text style={{ borderWidth: 2, borderColor: 'red', color: 'red', fontSize: 32, fontWeight: 'bold', padding: 10 }}>FUCK OFF</Text>
+                            <Text style={{ borderWidth: 2, borderColor: 'red', color: 'red', fontSize: 32, fontWeight: 'bold', padding: 10 }}>NOPE</Text>
 
                         </Animated.View>
 
