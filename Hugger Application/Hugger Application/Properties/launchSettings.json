@@ -11,11 +11,11 @@
   "profiles": {
     "Hugger_Application": {
       "commandName": "Project",
-      "launchUrl": "hugger_application",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:50000"
+      "applicationUrl": "https://localhost:50000;http://localhost:50001"
     }
   }
 }

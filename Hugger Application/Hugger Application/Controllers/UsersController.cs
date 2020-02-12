@@ -15,6 +15,9 @@ using Hugger_Application.Services;
 
 namespace Hugger_Application.Controllers
 {
+    /// <summary>
+    /// Controller for user accounts
+    /// </summary>
     [Authorize]
     [Route("hugger/[controller]")]
     [ApiController]
@@ -32,15 +35,43 @@ namespace Hugger_Application.Controllers
             _userService = userService;
             _linkGenerator = linkGenerator;
         }
-
+        /// <summary>
+        /// Authenticates user by model which include login and password
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /user to test auth
+        ///     {
+        ///         "login": "test",
+        ///         "password": "test"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="authenticateUserModel"></param>
+        /// <returns>Returns logged user with token </returns>
+        /// <response code="200">Return logger user with token</response> 
+        /// <response code="400">If no user with certain login/password</response>
+        /// <response code="500">If server not responding</response>
         [AllowAnonymous]
         [HttpPost("authenticate")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserModel>> Authenticate(AuthenticateUserModel authenticateUserModel)
         {
-            var user = await  _userService.AuthenticateAsync(authenticateUserModel.Login, authenticateUserModel.Password);
-            if (user == null) return BadRequest("Username or password is not correct");
+            try
+            {
+                var user = await _userService.AuthenticateAsync(authenticateUserModel.Login, authenticateUserModel.Password);
+                if (user == null) return BadRequest("Username or password is not correct");
 
-            return _mapper.Map<UserModel>(user);
+                return Ok(_mapper.Map<UserModel>(user));
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
+            }         
         }
 
 
@@ -50,7 +81,7 @@ namespace Hugger_Application.Controllers
             try
             {
                 var users = await _userRepository.GetAllUsersAsync();
-                return _mapper.Map<UserModel[]>(users);
+                return Ok(_mapper.Map<UserModel[]>(users));
             }
             catch (Exception)
             {

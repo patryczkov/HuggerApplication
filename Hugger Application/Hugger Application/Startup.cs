@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -19,8 +21,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace Hugger_Application
+
 {
     public class Startup
     {
@@ -70,6 +74,30 @@ namespace Hugger_Application
                     ValidateAudience = false
                 };
             });
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v0.1", new OpenApiInfo 
+                {
+                    Title = "Hugger API",
+                    Version = "version0.1",
+                    Description = "Project to show our skills after 1 year of learning in codecool.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Patryk Duda and Huber Haznar",
+                        Email = string.Empty, 
+                    },
+                    
+                });
+                var xmlfile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlfile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
+      
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,6 +117,12 @@ namespace Hugger_Application
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+           {
+               c.SwaggerEndpoint("/swagger/v0.1/swagger.json", "Hugger API 0.1");
+               c.RoutePrefix = string.Empty;
+           });
 
 
             app.UseEndpoints(endpoints =>
