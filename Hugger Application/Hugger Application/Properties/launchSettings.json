@@ -11,7 +11,7 @@
   "profiles": {
     "Hugger_Application": {
       "commandName": "Project",
-      "launchUrl": "",
+      "launchUrl": "hugger_application",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

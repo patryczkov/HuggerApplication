@@ -71,11 +71,24 @@ namespace Hugger_Application.Controllers
             {
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
-            }         
+            }
         }
-
+        /// <summary>
+        /// Getting all user from database
+        /// </summary>
+        /// <remarks>
+        ///    /// Sample request:
+        /// 
+        ///     GET / localhost:<port>/hugger/users
+        ///
+        /// </remarks>
+        /// <returns>Return whole users in database</returns>
+        /// <response code="200">Return users</response> 
+        /// <response code="500">If server not responding</response>
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserModel[]>> GetUsers()
         {
             try
@@ -89,7 +102,19 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
         }
+        /// <summary>
+        /// Get user but following id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Returns user by given id</returns>
+        /// <response code="200">Return user</response> 
+        /// <response code="404">User not found</response> 
+        /// <response code="500">If server not responding</response>
         [HttpGet("{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        
         public async Task<ActionResult<UserModel>> Get(int userId)
         {
             try
@@ -97,7 +122,7 @@ namespace Hugger_Application.Controllers
                 var user = await _userRepository.GetUserByIDAsync(userId);
                 if (user == null) return NotFound($"User with id= {userId} could not be found");
 
-                return _mapper.Map<UserModel>(user);
+                return Ok(_mapper.Map<UserModel>(user));
             }
             catch (Exception)
             {
