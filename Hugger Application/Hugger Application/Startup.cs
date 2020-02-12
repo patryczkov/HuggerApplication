@@ -45,7 +45,7 @@ namespace Hugger_Application
 
             //services.AddDbContext<UserContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("HuggerContext")));
-            services.AddTransient<IUserRepository, UserRepository>();
+           // services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddAutoMapper(typeof(Startup));
 

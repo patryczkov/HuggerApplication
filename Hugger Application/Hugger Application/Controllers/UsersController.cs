@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 namespace Hugger_Application.Controllers
 {
     /// <summary>
-    /// Controller for user accounts
+    /// Controller for user accounts.
     /// </summary>
     [Authorize]
     [Route("hugger/[controller]")]
@@ -39,7 +39,7 @@ namespace Hugger_Application.Controllers
             _linkGenerator = linkGenerator;
         }
         /// <summary>
-        /// Authenticates user by model which include login and password
+        /// Authenticate user by model which include login and password
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -105,7 +105,7 @@ namespace Hugger_Application.Controllers
         /// <response code="200">Return user</response> 
         /// <response code="404">User not found</response> 
         /// <response code="500">If server not responding</response>
-        [HttpGet("{userId}")]
+        [HttpGet("{userId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
