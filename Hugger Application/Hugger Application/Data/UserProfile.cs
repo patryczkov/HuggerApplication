@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Hugger_Application.Models;
+using Hugger_Application.Models.UserDTO;
 using Hugger_Web_Application.Models;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,14 @@ namespace Hugger_Application.Data
     {
         public UserProfile()
         {
-            CreateMap<User, UserModel>()
+            CreateMap<User, UserCreationDTO>()
                 .ReverseMap();
 
+            CreateMap<User, UserFixDTO>()
+                .ReverseMap();
+
+            CreateMap<User, UserUpdateDTO>()
+                .ReverseMap();
         }
     }
 }

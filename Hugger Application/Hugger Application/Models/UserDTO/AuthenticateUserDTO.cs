@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hugger_Application.Models
 {
-    public class AuthenticateUserModel
+    public class AuthenticateUserDTO
     {
         [Required]
         public string Login { get; set; }
