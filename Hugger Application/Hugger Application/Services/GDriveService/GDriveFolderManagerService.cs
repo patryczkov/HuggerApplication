@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Hugger_Application.Models.GoogleDriveAPI
 {
-    public class FolderManager
+    public class GDriveFolderManagerService
     {
         public static void CreateFolder(string folderName, DriveService service)
         {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Hugger_Web_Application.Models;
 using Hugger_Application.Models.Repository;
 using AutoMapper;
@@ -13,8 +12,8 @@ using Hugger_Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Hugger_Application.Services;
 using Hugger_Application.Models.UserDTO;
-using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
+using Hugger_Application.Models.GoogleDriveAPI;
 
 namespace Hugger_Application.Controllers
 {
@@ -29,7 +28,6 @@ namespace Hugger_Application.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
-        private readonly ILogger<UsersController> _logger;
         private readonly LinkGenerator _linkGenerator;
 
         public UsersController(IUserRepository userRepository, IMapper mapper, IUserService userService, LinkGenerator linkGenerator)
@@ -158,6 +156,11 @@ namespace Hugger_Application.Controllers
                      new { login = userModel.Login });
                  if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
                  */
+
+                var gDriveService = ConnectToGDrive.GetDriveService();
+                var userFolderPathName = ($"user_{userModel.Login}_photos");
+                userModel.FolderPath = userFolderPathName;
+                GDriveFolderManagerService.CreateFolder(userFolderPathName, gDriveService);
 
                 var user = _mapper.Map<User>(userModel);
                 _userRepository.Create(user);

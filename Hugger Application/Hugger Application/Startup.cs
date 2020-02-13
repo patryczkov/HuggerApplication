@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Hugger_Application.Helpers;
+using Hugger_Application.Models.GoogleDriveAPI;
 using Hugger_Application.Models.Repository;
 using Hugger_Application.Services;
 using Hugger_Web_Application.Models;
@@ -45,12 +46,12 @@ namespace Hugger_Application
 
             //services.AddDbContext<UserContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("HuggerContext")));
-           // services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
 
+            
 
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
