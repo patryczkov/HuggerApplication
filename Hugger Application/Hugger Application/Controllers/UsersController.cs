@@ -65,7 +65,7 @@ namespace Hugger_Application.Controllers
         {
             try
             {
-                var user = await _userService.AuthenticateAsync(authenticateUserModel.Login, authenticateUserModel.Password);
+                var user = await _userService.AuthenticateUserAsync(authenticateUserModel.Login, authenticateUserModel.Password);
                 if (user == null) return BadRequest("Username or password is not correct");
                 return Ok(_mapper.Map<UserCreationDTO>(user));
             }

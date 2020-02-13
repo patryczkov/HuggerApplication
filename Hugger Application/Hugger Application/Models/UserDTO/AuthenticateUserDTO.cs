@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hugger_Application.Models.UserDTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;

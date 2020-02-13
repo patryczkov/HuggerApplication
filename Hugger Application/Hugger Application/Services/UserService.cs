@@ -1,4 +1,5 @@
 ﻿using Hugger_Application.Helpers;
+using Hugger_Application.Models;
 using Hugger_Web_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -28,7 +29,7 @@ namespace Hugger_Application.Services
 
 
 
-        public async Task<User> AuthenticateAsync(string login, string password)
+        public async Task<User> AuthenticateUserAsync(string login, string password)
         {
             JwtSecurityTokenHandler tokenHandler;
             SecurityToken token;
