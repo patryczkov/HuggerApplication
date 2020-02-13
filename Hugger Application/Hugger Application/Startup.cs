@@ -51,7 +51,7 @@ namespace Hugger_Application
 
             services.AddControllers();
 
-            
+            services.AddCors();
 
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
@@ -120,11 +120,6 @@ namespace Hugger_Application
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlfile);
                 c.IncludeXmlComments(xmlPath);
             });
-
-
-
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,6 +132,9 @@ namespace Hugger_Application
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+            app.UseCors(x => x.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 
