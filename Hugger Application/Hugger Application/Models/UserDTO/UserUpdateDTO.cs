@@ -15,6 +15,6 @@ namespace Hugger_Application.Models.UserDTO
         
         public string Email { get; set; }
 
-        public int LastWatchedUserId { get; set; }
+        public long LastWatchedUserId { get; set; }
     }
 }

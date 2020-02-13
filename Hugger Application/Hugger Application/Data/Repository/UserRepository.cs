@@ -38,7 +38,7 @@ namespace Hugger_Application.Models.Repository
             throw new System.NotImplementedException();
         }
 
-        public async Task<User> GetUserByIDAsync(int userID, bool includeMatches = false)
+        public async Task<User> GetUserByIDAsync(long userID, bool includeMatches = false)
         {
             _logger.LogInformation($"Getting an user for {userID}");
 

@@ -23,7 +23,7 @@ namespace Hugger_Application.Models
         [Required]
         public int BirthYear { get; set; }
         public string FolderPath { get; set; }
-        public int LastWatchedUserId { get; set; }
+        public long LastWatchedUserId { get; set; }
         public int LocalizationId { get; set; }
         public string Token { get; set; }
     }

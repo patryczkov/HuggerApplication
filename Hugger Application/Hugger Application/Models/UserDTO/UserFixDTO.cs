@@ -17,7 +17,7 @@ namespace Hugger_Application.Models.UserDTO
         [Required]
         [StringLength(200, MinimumLength = 3)]
         public string FolderPath { get; set; }
-        public int LastWatchedUserId { get; set; }
+        public long LastWatchedUserId { get; set; }
         public int LocalizationId { get; set; }
     }
 }

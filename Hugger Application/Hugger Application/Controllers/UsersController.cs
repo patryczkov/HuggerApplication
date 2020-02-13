@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Hugger_Application.Services;
 using Hugger_Application.Models.UserDTO;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Hugger_Application.Controllers
 {
@@ -61,17 +62,17 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserCreationDTO>> Authenticate(AuthenticateUserDTO authenticateUserModel)
+        public async Task<ActionResult<UserRegisterDTO>> Authenticate(AuthenticateUserDTO authenticateUserModel)
         {
-            try
+           // try
             {
                 var user = await _userService.AuthenticateUserAsync(authenticateUserModel.Login, authenticateUserModel.Password);
                 if (user == null) return BadRequest("Username or password is not correct");
-                return Ok(_mapper.Map<UserCreationDTO>(user));
+                return Ok(_mapper.Map<UserRegisterDTO>(user));
             }
-            catch (Exception)
+            //catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
+            //    return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
         }
         /// <summary>
@@ -84,12 +85,12 @@ namespace Hugger_Application.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserCreationDTO[]>> GetUsers()
+        public async Task<ActionResult<UserRegisterDTO[]>> GetUsers()
         {
             try
             {
                 var users = await _userRepository.GetAllUsersAsync();
-                return Ok(_mapper.Map<UserCreationDTO[]>(users));
+                return Ok(_mapper.Map<UserRegisterDTO[]>(users));
             }
             catch (Exception)
             {
@@ -110,14 +111,14 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        public async Task<ActionResult<UserCreationDTO>> Get(int userId)
+        public async Task<ActionResult<UserRegisterDTO>> Get(int userId)
         {
             try
             {
                 var user = await _userRepository.GetUserByIDAsync(userId);
                 if (user == null) return NotFound($"User with id= {userId} could not be found");
 
-                return Ok(_mapper.Map<UserCreationDTO>(user));
+                return Ok(_mapper.Map<UserRegisterDTO>(user));
             }
             catch (Exception)
             {
@@ -141,7 +142,7 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         //linkgenerator not working yet
-        public async Task<ActionResult<UserCreationDTO>> PostNewUser(UserCreationDTO userModel)
+        public async Task<ActionResult<UserRegisterDTO>> PostNewUser(UserRegisterDTO userModel)
         {
             try
             {
@@ -161,7 +162,7 @@ namespace Hugger_Application.Controllers
                 var user = _mapper.Map<User>(userModel);
                 _userRepository.Create(user);
 
-                if (await _userRepository.SaveChangesAsync()) return Created($"hugger/users/{user.Id}", _mapper.Map<UserCreationDTO>(user));
+                if (await _userRepository.SaveChangesAsync()) return Created($"hugger/users/{user.Id}", _mapper.Map<UserRegisterDTO>(user));
                 return Ok();
 
             }
@@ -258,7 +259,7 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserCreationDTO>> Delete(int userId)
+        public async Task<ActionResult<UserRegisterDTO>> Delete(int userId)
         {
             try
             {
@@ -273,6 +274,14 @@ namespace Hugger_Application.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Could not connect to database");
             }
             return BadRequest("Failed to delete user");
+        }
+        private bool CheckUserIdAccessLevel(int userId)
+        {
+            var jwtToken = Request.Headers["Authorization"].ToString().Split(" ")[1];     
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwtToken);
+            var tokenId = int.Parse(token.Claims.First(c => c.Type == "unique_name").Value);
+            return tokenId == userId;
         }
     }
 }
