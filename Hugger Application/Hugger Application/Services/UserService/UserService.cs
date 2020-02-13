@@ -47,7 +47,6 @@ namespace Hugger_Application.Services
 
             return currentUser;
         }
-
         private void GenerateToken(User currentUser, out JwtSecurityTokenHandler tokenHandler, out SecurityToken token)
         {
             tokenHandler = new JwtSecurityTokenHandler();

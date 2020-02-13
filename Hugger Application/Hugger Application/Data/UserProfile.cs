@@ -13,7 +13,7 @@ namespace Hugger_Application.Data
     {
         public UserProfile()
         {
-            CreateMap<User, UserCreationDTO>()
+            CreateMap<User, UserRegisterDTO>()
                 .ReverseMap();
 
             CreateMap<User, UserFixDTO>()
@@ -21,6 +21,7 @@ namespace Hugger_Application.Data
 
             CreateMap<User, UserUpdateDTO>()
                 .ReverseMap();
+
         }
     }
 }
