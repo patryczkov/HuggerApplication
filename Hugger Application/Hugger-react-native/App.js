@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, Image, Dimensions, Animated, PanResponder } from 'react-native';
+import { FlatList, Platform, StyleSheet, Text, View, Image, Dimensions, Animated, PanResponder } from 'react-native';
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
-
-const Users = [
-    { id: "1", uri: require("./assets/profiles/1.jpg"), name: "Pola", age: "24"},
-    { id: "2", uri: require("./assets/profiles/2.jpg"), name: "Patryczek", age: "27"},
-    { id: "3", uri: require("./assets/profiles/3.jpg"), name: "Karyna", age: "22"},
-    { id: "4", uri: require("./assets/profiles/4.jpg"), name: "Duncun", age: "19"},
-    { id: "5", uri: require("./assets/profiles/5.jpg"), name: "Hanka", age: "25"},
-    { id: "6", uri: require("./assets/profiles/6.jpg"), name: "Kulfon", age: "20"},
-]
 
 export default class App extends Component {
 
@@ -19,7 +11,8 @@ export default class App extends Component {
 
         this.position = new Animated.ValueXY()
         this.state = {
-            currentIndex: 0
+            currentIndex: 0,
+            users: [],
         }
 
         this.rotate = this.position.x.interpolate({
@@ -59,6 +52,21 @@ export default class App extends Component {
         })
 
     }
+
+    componentDidMount() {
+        axios.get('https://localhost:50000/hugger/users')
+            .then(result => {
+                const users = result.data;
+                this.setState({ users });
+
+                console.log(users);
+            })
+            .catch((error) => {
+                console.error(error);
+                console.log(error)
+            })
+    }
+
     componentWillMount() {
         this.PanResponder = PanResponder.create({
 
@@ -98,9 +106,9 @@ export default class App extends Component {
     }
 
     renderUsers = () => {
+        let users = this.state.users
 
-        return Users.map((item, i) => {
-
+        return users.map((item, i) => {
 
             if (i < this.state.currentIndex) {
                 return null
@@ -112,9 +120,9 @@ export default class App extends Component {
                         key={item.id} style={[this.rotateAndTranslate, { height: height - 150, width: width, padding: 5, position: 'absolute' }]}>
 
                         <View style={{ position: 'absolute', top: 500, zIndex: 1000 }}>
-                            <Text style={styles.titleText}>{item.name}, {item.age}</Text>
+                            <Text style={styles.titleText}> {item.login}, {item.age} </Text>
                         </View>
-
+                        
                         <Animated.View style={{ opacity: this.likeOpacity, position: 'absolute', top: 100, right: 100, zIndex: 1000 }}>
                             <Text style={{ borderWidth: 2, borderColor: 'green', color: 'green', fontSize: 45, fontWeight: 'bold', padding: 10 }}>LIKE</Text>
                         </Animated.View>
@@ -125,7 +133,7 @@ export default class App extends Component {
 
                         <Image
                             style={{ flex: 1, height: null, width: null, resizeMode: 'cover', borderRadius: 20 }}
-                            source={item.uri} />
+                            source={{ uri: require("./assets/profiles/1.jpg") }} />
 
                     </Animated.View>
                 )
@@ -156,7 +164,7 @@ export default class App extends Component {
 
                         <Image
                             style={{ flex: 1, height: null, width: null, resizeMode: 'cover', borderRadius: 20 }}
-                            source={item.uri} />
+                            source={{ uri: require("./assets/profiles/1.jpg") }} />
 
                     </Animated.View>
                 )
@@ -172,13 +180,17 @@ export default class App extends Component {
 
                 <View style={{ flex: 1 }}>
                     {this.renderUsers()}
+
+                    <View style={{ top: 200, zIndex: -1 }}>
+                        <Text style={{ color: 'black', fontSize: 40, fontWeight: 'bold', textAlign: 'center', }}> No more people in your city! </Text>
+                    </View>
+
                 </View>
 
                 <View style={{ height: 60 }}>
                 </View>
 
             </View>
-
         );
     }
 }
@@ -208,5 +220,14 @@ const styles = StyleSheet.create({
         padding: 10,
         textAlign: 'left',
         left: 15
+    },
+    item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
     },
 });
