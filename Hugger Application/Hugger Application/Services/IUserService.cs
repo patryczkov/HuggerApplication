@@ -8,6 +8,6 @@ namespace Hugger_Application.Services
 {
     public interface IUserService
     {
-        public  Task<User> AuthenticateAsync(string login, string password); 
+        public  Task<User> AuthenticateUserAsync(string login, string password); 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hugger_Application.Models.UserDTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hugger_Application.Models
 {
-    public class AuthenticateUserModel
+    public class AuthenticateUserDTO
     {
         [Required]
         public string Login { get; set; }
