@@ -160,7 +160,9 @@ namespace Hugger_Application.Controllers
                 var gDriveService = ConnectToGDrive.GetDriveService();
                 var userFolderPathName = ($"user_{userModel.Login}_photos");
                 userModel.FolderPath = userFolderPathName;
-                GDriveFolderManagerService.CreateFolder(userFolderPathName, gDriveService);
+                
+                var userFolderId = GDriveFolderManagerService.CreateFolder(userFolderPathName, gDriveService);
+                userModel.FolderId = userFolderId;
 
                 var user = _mapper.Map<User>(userModel);
                 _userRepository.Create(user);

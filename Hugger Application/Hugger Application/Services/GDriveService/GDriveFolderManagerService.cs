@@ -6,7 +6,7 @@ namespace Hugger_Application.Models.GoogleDriveAPI
 {
     public class GDriveFolderManagerService
     {
-        public static void CreateFolder(string folderName, DriveService service)
+        public static string CreateFolder(string folderName, DriveService service)
         {
             var fileMetadata = new Google.Apis.Drive.v3.Data.File()
             {
@@ -17,6 +17,7 @@ namespace Hugger_Application.Models.GoogleDriveAPI
             request.Fields = "id";
             var file = request.Execute();
             Console.WriteLine("Folder ID: " + file.Id);
+            return file.Id;
         }
 
         public static void DeleteFolder(string folderName, DriveService service)

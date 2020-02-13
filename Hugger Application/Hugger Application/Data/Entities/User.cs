@@ -14,6 +14,7 @@ namespace Hugger_Web_Application.Models
         public string Login  { get; set; }
         public string Password { get; set; }
         public  string FolderPath { get; set; }
+        public string FolderId { get; set; }
         public int LastWatchedUserId { get; set; }
         [ForeignKey("Localizations")]
         public int LocalizationId { get; set; }
