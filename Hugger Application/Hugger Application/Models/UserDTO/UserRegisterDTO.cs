@@ -8,7 +8,7 @@ namespace Hugger_Application.Models
 {
     public class UserRegisterDTO
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(30, MinimumLength = 3)]
         public string Login { get; set; }
@@ -23,7 +23,7 @@ namespace Hugger_Application.Models
         [Required]
         public int BirthYear { get; set; }
         public string FolderPath { get; set; }
-        public long LastWatchedUserId { get; set; }
+        public int LastWatchedUserId { get; set; }
         public int LocalizationId { get; set; }
         public string Token { get; set; }
     }

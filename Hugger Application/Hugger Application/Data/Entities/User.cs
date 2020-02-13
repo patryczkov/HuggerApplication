@@ -10,7 +10,7 @@ namespace Hugger_Web_Application.Models
     public class User
     {
         [Key]
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string Login  { get; set; }
         public string Password { get; set; }
         public  string FolderPath { get; set; }

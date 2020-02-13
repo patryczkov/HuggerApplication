@@ -64,15 +64,15 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserRegisterDTO>> Authenticate(AuthenticateUserDTO authenticateUserModel)
         {
-           // try
+            try
             {
                 var user = await _userService.AuthenticateUserAsync(authenticateUserModel.Login, authenticateUserModel.Password);
                 if (user == null) return BadRequest("Username or password is not correct");
                 return Ok(_mapper.Map<UserRegisterDTO>(user));
             }
-            //catch (Exception)
+            catch (Exception)
             {
-            //    return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
             }
         }
         /// <summary>
