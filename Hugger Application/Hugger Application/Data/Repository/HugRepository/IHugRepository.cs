@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hugger_Application.Data.Repository.HugsRepository
+namespace Hugger_Application.Data.Repository.HugRepository
 {
-    public interface IHugsRepository : IRepository<Hug>
+    public interface IHugRepository : IRepository<Hug>
     {
         Task<Hug[]> GetHugsBy_SenderUserIdAsync(int userId);
         Task<Hug> GetHugBy_SenderUserIdAndHugIdAsync(int userId, int hugId);

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Hugger_Application.Data.Repository.HugsRepository;
+using Hugger_Application.Data.Repository.HugRepository;
 using Hugger_Application.Models;
 using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -15,9 +15,9 @@ namespace Hugger_Application.Controllers
     /// <summary>
     /// Controller of hugs of each user
     /// </summary>
-    [Authorize]
+    //[Authorize]
     [ApiController]
-    [Route("/hugger/users/{userId}/hugs")]
+    [Route("/hugger/users/{userId}/[controller]")]
     public class HugsController : ControllerBase
     {
         private readonly IHugRepository _hugRepository;
@@ -31,7 +31,7 @@ namespace Hugger_Application.Controllers
 
 
         /// <summary>
-        /// Getting all hugs for certain user
+        /// Get all hugs for certain user
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>Id of hug and Id of sender and receiver</returns>
@@ -39,16 +39,45 @@ namespace Hugger_Application.Controllers
         /// <response code="404">Hugs not found</response> 
         /// <response code="500">Server not responding</response>
 
-        [HttpGet("userId:int")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<HugDTO[]>> Get(int userId)
         {
-            var hugs = await _hugRepository.GetHugsBy_SenderUserIdAsync(userId);
-            if (hugs == null) return NotFound($"There is no hugs fo userId= {userId}");
+            try
+            {
+                var hugs = await _hugRepository.GetHugsBy_SenderUserIdAsync(userId);
+                if (hugs.Length == 0 || hugs == null) return NotFound($"There is no hugs for userId= {userId}");
 
-            return Ok(_mapper.Map<HugDTO[]>(hugs));
+                return Ok(_mapper.Map<HugDTO[]>(hugs));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+              
+            }
+        }
+
+        /// <summary>
+        /// Get certain hug for a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="hugId"></param>
+        /// <returns>Hug information of senderId and receiverId</returns>
+        /// <response code="200">Return hug</response> 
+        /// <response code="404">Hug or user not found</response> 
+        /// <response code="500">Server not responding</response>
+        [HttpGet("{hugId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<HugDTO>> Get(int userId, int hugId)
+        {
+            var hug = await _hugRepository.GetHugBy_SenderUserIdAndHugIdAsync(userId, hugId);
+            if (hug == null) return NotFound($"There is no hug for id= {hugId} and userId= {userId}");
+
+            return Ok(_mapper.Map<HugDTO>(hug));
         }
     }
 }

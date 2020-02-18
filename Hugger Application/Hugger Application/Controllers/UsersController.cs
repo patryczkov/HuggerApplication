@@ -20,7 +20,7 @@ namespace Hugger_Application.Controllers
     /// <summary>
     /// Controller for user accounts.
     /// </summary>
-    [Authorize]
+    //[Authorize]
     [Route("hugger/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -74,7 +74,7 @@ namespace Hugger_Application.Controllers
             }
         }
         /// <summary>
-        /// Getting all user from database
+        /// Get all user from database
         /// </summary>
         /// <returns>Return whole users in database</returns>
         /// <response code="200">Return users</response> 
@@ -186,7 +186,7 @@ namespace Hugger_Application.Controllers
 
         }
         /// <summary>
-        /// Update/fix whole user data, by certain id
+        /// Updat/fix whole user data, by certain id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="userModel"></param>
@@ -222,7 +222,7 @@ namespace Hugger_Application.Controllers
         }
 
         /// <summary>
-        /// Updates some date of user
+        /// Update some date of user
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="userModel"></param>

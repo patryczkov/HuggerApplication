@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hugger_Application.Models
 {
-    public class HugGetDTO
+    public class HugDTO
     {
         
         public int Id { get; set; }

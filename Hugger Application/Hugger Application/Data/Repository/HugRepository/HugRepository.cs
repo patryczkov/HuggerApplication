@@ -7,14 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hugger_Application.Data.Repository.HugsRepository
+namespace Hugger_Application.Data.Repository.HugRepository
 {
-    public class HugsRepository : Repository<Hug>, IHugsRepository
+    public class HugRepository : Repository<Hug>, IHugRepository
     {
         private readonly UserContext _context;
         private readonly ILogger _logger;
 
-        public HugsRepository(UserContext context, ILogger logger) : base(context)
+        public HugRepository(UserContext context, ILogger<HugRepository> logger) : base(context)
         {
             _context = context;
             _logger = logger;
