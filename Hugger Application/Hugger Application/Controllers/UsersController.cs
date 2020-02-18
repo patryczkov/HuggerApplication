@@ -156,11 +156,11 @@ namespace Hugger_Application.Controllers
                      new { login = userModel.Login });
                  if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
                  */
-
+                //create folder name and path
                 var gDriveService = ConnectToGDrive.GetDriveService();
                 var userFolderPathName = ($"user_{userModel.Login}_photos");
                 userModel.FolderPath = userFolderPathName;
-                
+                //create folderID
                 var userFolderId = GDriveFolderManagerService.CreateFolder(userFolderPathName, gDriveService);
                 userModel.FolderId = userFolderId;
 
