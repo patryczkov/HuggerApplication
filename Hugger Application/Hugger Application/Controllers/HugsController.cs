@@ -25,10 +25,10 @@ namespace Hugger_Application.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public HugsController(IHugRepository hugRepository,  IMapper mapper)
+        public HugsController(IHugRepository hugRepository, /*IUserRepository userRepository, */ IMapper mapper)
         {
             _hugRepository = hugRepository;
-            //_userRepository = userRepository;
+            //_userRepository = userRepository;  only one context. how to fix it?
             _mapper = mapper;
         }
 
@@ -107,11 +107,13 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<HugDTO>> Post(HugDTO hugDTO)
+        public async Task<ActionResult<HugDTO>> Post(int userId, HugDTO hugDTO)
         {
-            //if (userId != hugDTO.UserIDSender) return UnprocessableEntity("UserId is diffrent than model userId");
+            if (userId != hugDTO.UserIDSender) return UnprocessableEntity("UserId is diffrent than model userId");
             try
             {
+                //context error - how to fix it?
+
                 //var user = _userRepository.GetUserByIDAsync(userId);
                 //if (user == null) return NotFound($"Userid= {userId} not exist");
 
