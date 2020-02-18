@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Hugger_Application.Data.Repository.HugsRepository;
 using Hugger_Application.Helpers;
 using Hugger_Application.Models.GoogleDriveAPI;
 using Hugger_Application.Models.Repository;
@@ -38,9 +39,11 @@ namespace Hugger_Application
             var appSettingSection = Configuration.GetSection("AppSettings");
 
             services.AddDbContext<UserContext>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            //=============Intefaces and its implementation
             services.AddScoped<IUserService, UserService>();
-
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IHugRepository, HugRepository>();
+            //=========ConfigureOfApp
             services.Configure<AppSettings>(appSettingSection);
             var appSettings = appSettingSection.Get<AppSettings>();
 
@@ -52,7 +55,7 @@ namespace Hugger_Application
             services.AddControllers();
 
             services.AddCors();
-
+            //==========JWT token
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {
