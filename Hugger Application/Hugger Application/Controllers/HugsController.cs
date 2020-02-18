@@ -99,7 +99,7 @@ namespace Hugger_Application.Controllers
         /// <response code="201">Hug created</response>
         /// <response code="400">Hug could not be created</response> 
         /// <response code="404">User not found</response> 
-        /// <response code="422">UserId is diffrent from senderId</response>
+        /// <response code="422">UserId is different from senderId</response>
         /// <response code="500">Server not responding</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -109,9 +109,16 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<HugDTO>> Post(int userId, HugDTO hugDTO)
         {
-            if (userId != hugDTO.UserIDSender) return UnprocessableEntity("UserId is diffrent than model userId");
+            if (userId != hugDTO.UserIDSender) return UnprocessableEntity("UserId is different than model userId");
             try
             {
+                var existingHug = await _hugRepository.GetHugsBy_SenderUserIdAsync(userId);
+                if(existingHug.Where(h => h.UserIDSender == hugDTO.UserIDSender && h.UserIDReceiver == hugDTO.UserIDReceiver).Any())
+                {
+                    return BadRequest("Hug exists");
+                }
+
+                //TODO HUG id autoincrement, context pool
                 //context error - how to fix it?
 
                 //var user = _userRepository.GetUserByIDAsync(userId);
@@ -121,7 +128,7 @@ namespace Hugger_Application.Controllers
                 _hugRepository.Create(hug);
 
                 if (await _hugRepository.SaveChangesAsync()) return Created("", _mapper.Map<HugDTO>(hugDTO));
-                else return BadRequest("Faile to add new hug");
+                else return BadRequest("Failed to add new hug");
 
                 
             }

@@ -11,13 +11,11 @@ namespace Hugger_Web_Application.Models
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey("Users")]
+        [ForeignKey("User")]
         public int UserIDSender { get; set; }
-        [ForeignKey("Users")]
+        public virtual User User  { get; set; }
         public int UserIDReceiver { get; set; }
         
-
-        public virtual User User { get; set; }
 
     }
 }

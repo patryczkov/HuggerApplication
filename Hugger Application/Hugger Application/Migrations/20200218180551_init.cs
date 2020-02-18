@@ -2,7 +2,7 @@
 
 namespace Hugger_Application.Migrations
 {
-    public partial class Initialtokenmigration : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,7 +47,7 @@ namespace Hugger_Application.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -55,6 +55,7 @@ namespace Hugger_Application.Migrations
                     Login = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
                     FolderPath = table.Column<string>(nullable: true),
+                    FolderId = table.Column<string>(nullable: true),
                     LastWatchedUserId = table.Column<int>(nullable: false),
                     LocalizationId = table.Column<int>(nullable: false),
                     Token = table.Column<string>(nullable: true),
@@ -64,9 +65,9 @@ namespace Hugger_Application.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Localizations_LocalizationId",
+                        name: "FK_Users_Localizations_LocalizationId",
                         column: x => x.LocalizationId,
                         principalTable: "Localizations",
                         principalColumn: "Id",
@@ -77,19 +78,21 @@ namespace Hugger_Application.Migrations
                 name: "Hugs",
                 columns: table => new
                 {
-                    UserIDSender = table.Column<int>(nullable: false),
-                    UserIDReceiver = table.Column<int>(nullable: false),
                     Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserIDSender = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true),
+                    UserIDReceiver = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hugs", x => new { x.UserIDSender, x.UserIDReceiver });
+                    table.PrimaryKey("PK_Hugs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Hugs_User_UserIDReceiver",
-                        column: x => x.UserIDReceiver,
-                        principalTable: "User",
+                        name: "FK_Hugs_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,9 +110,9 @@ namespace Hugger_Application.Migrations
                 {
                     table.PrimaryKey("PK_Matches", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Matches_User_UserId",
+                        name: "FK_Matches_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -132,9 +135,9 @@ namespace Hugger_Application.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Users_Characteristics_User_UserId",
+                        name: "FK_Users_Characteristics_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -157,9 +160,9 @@ namespace Hugger_Application.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Users_Preferences_User_UserId",
+                        name: "FK_Users_Preferences_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -186,9 +189,9 @@ namespace Hugger_Application.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Hugs_UserIDReceiver",
+                name: "IX_Hugs_UserId",
                 table: "Hugs",
-                column: "UserIDReceiver");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Matches_UserId",
@@ -201,8 +204,8 @@ namespace Hugger_Application.Migrations
                 column: "MatchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_LocalizationId",
-                table: "User",
+                name: "IX_Users_LocalizationId",
+                table: "Users",
                 column: "LocalizationId");
 
             migrationBuilder.CreateIndex(
@@ -240,7 +243,7 @@ namespace Hugger_Application.Migrations
                 name: "Preferences");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Localizations");
