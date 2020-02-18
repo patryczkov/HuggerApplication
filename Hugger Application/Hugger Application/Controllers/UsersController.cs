@@ -103,7 +103,7 @@ namespace Hugger_Application.Controllers
         /// <returns>Returns user by given id</returns>
         /// <response code="200">Return user</response> 
         /// <response code="404">User not found</response> 
-        /// <response code="500">If server not responding</response>
+        /// <response code="500">Server not responding</response>
         [HttpGet("{userId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -129,7 +129,7 @@ namespace Hugger_Application.Controllers
         /// </summary>
         /// <param name="userModel"></param>
         /// <returns>Uploads record to database</returns>
-        /// <response code="200">When method used without model</response> 
+        /// <response code="200">Method used without model</response> 
         /// <response code="201">User created</response>
         /// <response code="400">User login or id in use</response> 
         /// <response code="500">Server not responding</response>
@@ -156,6 +156,9 @@ namespace Hugger_Application.Controllers
                      new { login = userModel.Login });
                  if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
                  */
+               
+               //TODO add proper  
+                
                 //create folder name and path
                 var gDriveService = ConnectToGDrive.GetDriveService();
                 var userFolderPathName = ($"user_{userModel.Login}_photos");
@@ -163,6 +166,10 @@ namespace Hugger_Application.Controllers
                 //create folderID
                 var userFolderId = GDriveFolderManagerService.CreateFolder(userFolderPathName, gDriveService);
                 userModel.FolderId = userFolderId;
+                
+
+
+
 
                 var user = _mapper.Map<User>(userModel);
                 _userRepository.Create(user);
@@ -184,7 +191,7 @@ namespace Hugger_Application.Controllers
         /// <param name="userId"></param>
         /// <param name="userModel"></param>
         /// <returns>Updated user with new data</returns>
-        /// <response code="200">When user succesfully updated</response>
+        /// <response code="200">User succesfully updated</response>
         /// <response code="400">User couldn't be updated</response> 
         /// <response code="404">User couldn't be found</response> 
         /// <response code="500">Server not responding</response>
@@ -220,7 +227,7 @@ namespace Hugger_Application.Controllers
         /// <param name="userId"></param>
         /// <param name="userModel"></param>
         /// <returns>Updated user by giving data</returns>
-        /// <response code="200">When user succesfully updated</response>
+        /// <response code="200">User succesfully updated</response>
         /// <response code="400">User couldn't be updated</response> 
         /// <response code="404">User couldn't be found</response> 
         /// <response code="500">Server not responding</response>
@@ -254,7 +261,7 @@ namespace Hugger_Application.Controllers
         /// Delete user with certain id
         /// </summary>
         /// <param name="userId"></param>
-        /// <response code="204">When user succesfully deleted</response>
+        /// <response code="204">User succesfully deleted</response>
         /// <response code="400">User couldn't be deleted</response> 
         /// <response code="404">User couldn't be found</response> 
         /// <response code="500">Server not responding</response>
