@@ -70,7 +70,7 @@ namespace Hugger_Application.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
         /// <summary>
@@ -93,7 +93,7 @@ namespace Hugger_Application.Controllers
             catch (Exception)
             {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
         /// <summary>
@@ -121,7 +121,7 @@ namespace Hugger_Application.Controllers
             catch (Exception)
             {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
         /// <summary>
@@ -129,12 +129,10 @@ namespace Hugger_Application.Controllers
         /// </summary>
         /// <param name="userModel"></param>
         /// <returns>Uploads record to database</returns>
-        /// <response code="200">Method used without model</response> 
         /// <response code="201">User created</response>
         /// <response code="400">User login or id in use</response> 
         /// <response code="500">Server not responding</response>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -169,19 +167,16 @@ namespace Hugger_Application.Controllers
                 
 
 
-
-
                 var user = _mapper.Map<User>(userModel);
                 _userRepository.Create(user);
 
                 if (await _userRepository.SaveChangesAsync()) return Created($"hugger/users/{user.Id}", _mapper.Map<UserRegisterDTO>(user));
-                return Ok();
-
+                else return BadRequest("Failed to add new user");  
             }
             catch (Exception)
             {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not contact to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
 
         }
@@ -215,7 +210,7 @@ namespace Hugger_Application.Controllers
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Could not connect to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
 
             return BadRequest($"Could not update data for user with id=  {userId}");
@@ -252,7 +247,7 @@ namespace Hugger_Application.Controllers
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Could not connect to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
             return BadRequest($"Could not update data for user with id=  {userId}");
         }
@@ -283,7 +278,7 @@ namespace Hugger_Application.Controllers
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Could not connect to database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
             return BadRequest("Failed to delete user");
         }
