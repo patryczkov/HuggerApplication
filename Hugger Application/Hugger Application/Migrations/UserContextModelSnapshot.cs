@@ -36,18 +36,20 @@ namespace Hugger_Application.Migrations
 
             modelBuilder.Entity("Hugger_Web_Application.Models.Hug", b =>
                 {
-                    b.Property<int>("UserIDSender")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("UserIDReceiver")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("UserIDSender")
                         .HasColumnType("int");
 
-                    b.HasKey("UserIDSender", "UserIDReceiver");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UserIDReceiver");
+                    b.HasIndex("UserIDSender");
 
                     b.ToTable("Hugs");
                 });
@@ -175,7 +177,7 @@ namespace Hugger_Application.Migrations
 
                     b.HasIndex("LocalizationId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Hugger_Web_Application.Models.UserCharacteristic", b =>
@@ -217,8 +219,8 @@ namespace Hugger_Application.Migrations
             modelBuilder.Entity("Hugger_Web_Application.Models.Hug", b =>
                 {
                     b.HasOne("Hugger_Web_Application.Models.User", "User")
-                        .WithMany("Hugs")
-                        .HasForeignKey("UserIDReceiver")
+                        .WithMany()
+                        .HasForeignKey("UserIDSender")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

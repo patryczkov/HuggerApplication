@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hugger_Application.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20200210124207_Initial-token-migration")]
-    partial class Initialtokenmigration
+    [Migration("20200218182429_init2")]
+    partial class init2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,18 +38,20 @@ namespace Hugger_Application.Migrations
 
             modelBuilder.Entity("Hugger_Web_Application.Models.Hug", b =>
                 {
-                    b.Property<int>("UserIDSender")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("UserIDReceiver")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("UserIDSender")
                         .HasColumnType("int");
 
-                    b.HasKey("UserIDSender", "UserIDReceiver");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UserIDReceiver");
+                    b.HasIndex("UserIDSender");
 
                     b.ToTable("Hugs");
                 });
@@ -152,6 +154,9 @@ namespace Hugger_Application.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FolderId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FolderPath")
                         .HasColumnType("nvarchar(max)");
 
@@ -174,7 +179,7 @@ namespace Hugger_Application.Migrations
 
                     b.HasIndex("LocalizationId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Hugger_Web_Application.Models.UserCharacteristic", b =>
@@ -216,8 +221,8 @@ namespace Hugger_Application.Migrations
             modelBuilder.Entity("Hugger_Web_Application.Models.Hug", b =>
                 {
                     b.HasOne("Hugger_Web_Application.Models.User", "User")
-                        .WithMany("Hugs")
-                        .HasForeignKey("UserIDReceiver")
+                        .WithMany()
+                        .HasForeignKey("UserIDSender")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

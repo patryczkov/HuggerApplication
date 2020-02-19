@@ -66,38 +66,21 @@ namespace Hugger_Web_Application.Models
                 .HasOne(UserPref => UserPref.Preference)
                 .WithMany(Pref => Pref.UsersPreferences)
                 .HasForeignKey(UserPref => UserPref.PreferenceId);
+     
 
             //join table User - Match (Hugs)
-            modelBuilder.Entity<Hug>().HasKey(Hg => new { Hg.UserIDSender, Hg.UserIDReceiver });
+           /* modelBuilder.Entity<Hug>().HasKey(Hg => new {Hg.UserIDSender, Hg.UserIDReceiver });
 
-            modelBuilder.Entity<Hug>()
-                .HasOne(Hg => Hg.User)
-                .WithMany(Usr => Usr.Hugs)
-                .HasForeignKey(Hg => Hg.UserIDSender);
+             modelBuilder.Entity<Hug>()
+                 .HasOne(Hg => Hg.User)
+                 .WithMany(Usr => Usr.Hugs)
+                 .HasForeignKey(Hg => Hg.UserIDSender);
 
-            modelBuilder.Entity<Hug>()
-                .HasOne(Hg => Hg.User)
-                .WithMany(Usr => Usr.Hugs)
-                .HasForeignKey(Hg => Hg.UserIDReceiver);
-
-
-
-
-
-
-
-
-
-
-
-        }
-
-
-        public DbSet<Hugger_Web_Application.Models.User> User { get; set; }
-
-        public static implicit operator UserContext(UserContextFactory v)
-        {
-            throw new NotImplementedException();
+             modelBuilder.Entity<Hug>()
+                 .HasOne(Hg => Hg.User)
+                 .WithMany(Usr => Usr.Hugs)
+                 .HasForeignKey(Hg => Hg.UserIDReceiver);*/
+                 
         }
     }
 }
