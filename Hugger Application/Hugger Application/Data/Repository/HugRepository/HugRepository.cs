@@ -36,7 +36,7 @@ namespace Hugger_Application.Data.Repository.HugRepository
 
         public async Task<Hug> GetHugBy_SenderUserIdAndHugIdAsync(int userId, int hugId)
         {
-            _logger.LogInformation($"Getting hub by hugId= {hugId} and userId= {userId}");
+            _logger.LogInformation($"Getting hug by hugId= {hugId} and userId= {userId}");
 
             IQueryable<Hug> hugQuery = _context.Hugs;
 
@@ -45,6 +45,21 @@ namespace Hugger_Application.Data.Repository.HugRepository
 
             return await hugQuery.FirstOrDefaultAsync();
 
+        }
+        public async Task<Hug> GetHugBy_ReceiverId_UserSenderIdAsync(int senderId, int receiverID)
+        {
+            _logger.LogInformation("Getting hug by receiverId");
+
+            IQueryable<Hug> hugQuery = _context.Hugs;
+
+            hugQuery = hugQuery
+                .Where(h => h.UserIDReceiver == senderId && h.UserIDSender == receiverID);
+
+            return await hugQuery.FirstOrDefaultAsync();
+        }
+        public void CreateMatch(Match match)
+        {
+            _context.Add(match);
         }
         
     }

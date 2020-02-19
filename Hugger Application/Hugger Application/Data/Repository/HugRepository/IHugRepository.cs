@@ -11,5 +11,7 @@ namespace Hugger_Application.Data.Repository.HugRepository
     {
         Task<Hug[]> GetHugsBy_SenderUserIdAsync(int userId);
         Task<Hug> GetHugBy_SenderUserIdAndHugIdAsync(int userId, int hugId);
+        Task<Hug> GetHugBy_ReceiverId_UserSenderIdAsync(int senderId, int receiverID);
+        void CreateMatch(Match match);
     }
 }

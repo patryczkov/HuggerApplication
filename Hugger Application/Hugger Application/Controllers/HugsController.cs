@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Hugger_Application.Data.Repository.HugRepository;
 using Hugger_Application.Models;
+using Hugger_Application.Models.MatchDTO;
 using Hugger_Application.Models.Repository;
 using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -113,10 +114,28 @@ namespace Hugger_Application.Controllers
             try
             {
                 var existingHug = await _hugRepository.GetHugsBy_SenderUserIdAsync(userId);
-                if(existingHug.Where(h => h.UserIDSender == hugDTO.UserIDSender && h.UserIDReceiver == hugDTO.UserIDReceiver).Any())
+
+                if (existingHug.Where(h => h.UserIDSender == hugDTO.UserIDSender && h.UserIDReceiver == hugDTO.UserIDReceiver).Any())
                 {
                     return BadRequest("Hug exists");
                 }
+
+                var matchHug = await _hugRepository.GetHugBy_ReceiverId_UserSenderIdAsync(hugDTO.UserIDSender, hugDTO.UserIDReceiver);
+                if (matchHug != null)
+                {
+                    Console.WriteLine("You have a match!");
+                    var createMatch = new MatchCreateDTO
+                    {
+                        MatchDate = DateTime.UtcNow.ToString(),
+                        UserIDSender = hugDTO.UserIDSender,
+                        UserIDReceiver = hugDTO.UserIDReceiver
+                    };
+
+                    var match = _mapper.Map<Match>(createMatch);
+                    _hugRepository.CreateMatch(match);
+
+                }
+
 
                 //TODO HUG id autoincrement, context pool
                 //context error - how to fix it?
@@ -130,7 +149,7 @@ namespace Hugger_Application.Controllers
                 if (await _hugRepository.SaveChangesAsync()) return Created("", _mapper.Map<HugDTO>(hugDTO));
                 else return BadRequest("Failed to add new hug");
 
-                
+
             }
             catch (Exception)
             {
