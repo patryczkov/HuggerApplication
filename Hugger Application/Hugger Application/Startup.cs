@@ -10,6 +10,7 @@ using Hugger_Application.Data.Repository.HugRepository;
 using Hugger_Application.Helpers;
 using Hugger_Application.Models.Repository;
 using Hugger_Application.Services;
+using Hugger_Application.Services.HugService;
 using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -41,7 +42,9 @@ namespace Hugger_Application
             //=============Intefaces and its implementation
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IHugService, HugService>();
             services.AddScoped<IHugRepository, HugRepository>();
+           
             //=========ConfigureOfApp
             services.Configure<AppSettings>(appSettingSection);
             var appSettings = appSettingSection.Get<AppSettings>();

@@ -12,7 +12,6 @@ namespace Hugger_Web_Application.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-
         public virtual ICollection<UserCharacteristic> UserCharacteristics { get; set; }
     }
 }

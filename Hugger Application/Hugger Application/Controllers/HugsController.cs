@@ -3,6 +3,7 @@ using Hugger_Application.Data.Repository.HugRepository;
 using Hugger_Application.Models;
 using Hugger_Application.Models.MatchDTO;
 using Hugger_Application.Models.Repository;
+using Hugger_Application.Services.HugService;
 using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,12 +24,14 @@ namespace Hugger_Application.Controllers
     public class HugsController : ControllerBase
     {
         private readonly IHugRepository _hugRepository;
+        private readonly IHugService _hugService;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public HugsController(IHugRepository hugRepository, /*IUserRepository userRepository, */ IMapper mapper)
+        public HugsController(IHugRepository hugRepository, IHugService hugService, /*IUserRepository userRepository, */ IMapper mapper)
         {
             _hugRepository = hugRepository;
+            _hugService = hugService;
             //_userRepository = userRepository;  only one context. how to fix it?
             _mapper = mapper;
         }
@@ -120,21 +123,7 @@ namespace Hugger_Application.Controllers
                     return BadRequest("Hug exists");
                 }
 
-                var matchHug = await _hugRepository.GetHugBy_ReceiverId_UserSenderIdAsync(hugDTO.UserIDSender, hugDTO.UserIDReceiver);
-                if (matchHug != null)
-                {
-                    Console.WriteLine("You have a match!");
-                    var createMatch = new MatchCreateDTO
-                    {
-                        MatchDate = DateTime.UtcNow.ToString(),
-                        UserIDSender = hugDTO.UserIDSender,
-                        UserIDReceiver = hugDTO.UserIDReceiver
-                    };
-
-                    var match = _mapper.Map<Match>(createMatch);
-                    _hugRepository.CreateMatch(match);
-
-                }
+                _hugService.CheckIfUsersHasAMatch(hugDTO);
 
 
                 //TODO HUG id autoincrement, context pool
