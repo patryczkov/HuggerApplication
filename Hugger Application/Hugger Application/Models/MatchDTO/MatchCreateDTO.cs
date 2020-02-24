@@ -9,11 +9,12 @@ namespace Hugger_Application.Models.MatchDTO
     public class MatchCreateDTO
     {
   
-        [Required]
-        public string MatchDate { get; set; }
+
         [Required]
         public int UserIDSender { get; set; }
         [Required]
         public int UserIDReceiver { get; set; }
+        [Required]
+        public string MatchDate { get; set; }
     }
 }

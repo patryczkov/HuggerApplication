@@ -3,14 +3,16 @@ using Hugger_Web_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hugger_Application.Migrations
 {
     [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20200224124528_Fix-of-relationship-between-matches-and-users")]
+    partial class Fixofrelationshipbetweenmatchesandusers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,7 +217,7 @@ namespace Hugger_Application.Migrations
             modelBuilder.Entity("Hugger_Web_Application.Models.Hug", b =>
                 {
                     b.HasOne("Hugger_Web_Application.Models.User", "User")
-                        .WithMany("Hugs")
+                        .WithMany()
                         .HasForeignKey("UserIDSender")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

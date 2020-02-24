@@ -30,32 +30,6 @@ namespace Hugger_Application.Controllers
         }
 
         /// <summary>
-        /// Get all matches in database
-        /// </summary>
-        /// <returns>Return all matches in database </returns>
-        /// <response code="200">Return matches</response> 
-        /// <response code="500">If server not responding</response>
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<MatchGetDTO[]>> Get()
-        {
-            try
-            {
-                var matches = await _matchesRepository.GetAllMatchesAsync();
-                return Ok(_mapper.Map<MatchGetDTO>(matches));
-
-            }
-            catch (Exception)
-            {
-
-                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
-            }
-          
-        }
-
-        /// <summary>
         /// Get all matches for user
         /// </summary>
         /// <param name="userId"></param>
@@ -63,7 +37,7 @@ namespace Hugger_Application.Controllers
         /// <response code="200">Return matches</response> 
         /// <response code="404">Match could not be found</response>
         /// <response code="500">If server not responding</response>
-        [HttpGet("{userId:int}")]
+        [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -72,9 +46,9 @@ namespace Hugger_Application.Controllers
             try
             {
                 var matchesForUser = await _matchesRepository.GetMatchesByUserIdAsync(userId);
-                if (matchesForUser == null || matchesForUser.Length == 0) return NotFound($"There is no matches fo userId= {userId}");
-  
-                return Ok(_mapper.Map<MatchGetDTO>(matchesForUser));
+                if (matchesForUser == null || matchesForUser.Length == 0) return NotFound($"Could not found  matches for userId= {userId}");
+
+                return Ok(_mapper.Map<MatchGetDTO[]>(matchesForUser));
             }
             catch (Exception)
             {
@@ -82,10 +56,33 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
+        /// <summary>
+        /// Remove match for user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userReceiverId"></param>
+        /// <returns>Remove match for user</returns>
 
-        public async Task<ActionResult<MatchCreateDTO>> Delete(int userId, int userReceiverId)
+
+        [HttpDelete("{userReceiverId:int}")]
+        public async Task<ActionResult<MatchGetDTO>> Delete(int userId, int userReceiverId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var oldMatch = await _matchesRepository.GetMatchByUserId_UserReceiverIdAsync(userId, userReceiverId);
+                if (oldMatch == null) return NotFound($"Could not found  matches for userId= {userId} and receiverId= {userReceiverId}");
+
+                _matchesRepository.Delete(oldMatch);
+
+                if (await _matchesRepository.SaveChangesAsync()) return NoContent();
+
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+            return BadRequest("Failed to delete match");
         }
 
 

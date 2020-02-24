@@ -7,8 +7,9 @@ namespace Hugger_Application.Models.MatchDTO
 {
     public class MatchGetDTO
     {
-        public string MatchDate { get; set; }
+        public int Id { get; set; }
         public int UserIDSender { get; set; }
         public int UserIDReceiver { get; set; }
+        public string MatchDate { get; set; }
     }
 }

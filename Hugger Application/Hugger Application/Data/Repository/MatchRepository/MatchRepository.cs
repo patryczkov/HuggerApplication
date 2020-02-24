@@ -15,7 +15,7 @@ namespace Hugger_Application.Data.Repository.MatchRepository
         private readonly UserContext _context;
         private readonly ILogger _logger;
 
-        public MatchRepository(UserContext userContext, ILogger logger) : base(userContext)
+        public MatchRepository(UserContext userContext, ILogger<MatchRepository> logger) : base(userContext)
         {
             _context = userContext;
             _logger = logger;

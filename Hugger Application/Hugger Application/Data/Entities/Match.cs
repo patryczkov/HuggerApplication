@@ -11,12 +11,11 @@ namespace Hugger_Web_Application.Models
     {
         [Key]
         public int Id { get; set; }
-        public string MatchDate { get; set; }
-        [ForeignKey("Users")]
+        [ForeignKey("User")]
         public int UserIDSender { get; set; }
-        [ForeignKey("Users")]
-        public int UserIDReceiver { get; set; }
         public virtual User User { get; set; }
+        public int UserIDReceiver { get; set; }
+        public string MatchDate { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
 
 
