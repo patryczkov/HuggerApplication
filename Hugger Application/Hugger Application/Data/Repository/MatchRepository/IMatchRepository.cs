@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hugger_Application.Data.Repository.MatchRepository
 {
-    interface IMatchRepository : IRepository<Match>
+    public interface IMatchRepository : IRepository<Match>
     {
         Task<Match[]> GetAllMatchesAsync();
         Task<Match[]> GetMatchesByUserIdAsync(int userId);

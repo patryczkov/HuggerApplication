@@ -45,11 +45,14 @@ namespace Hugger_Application.Data.Repository.MatchRepository
         }
 
 
-        public Task<Match[]> GetMatchesByDateOfMatch(string date)
+        public async Task<Match[]> GetMatchesByDateOfMatch(string date)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation($"Getting matches by date= {date}");
 
+            IQueryable<Match> matchesQuery = _context.Matches;
+            matchesQuery.Where(mtch => mtch.MatchDate == date);
 
+            return await matchesQuery.ToArrayAsync();
         }
 
     }
