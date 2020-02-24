@@ -25,14 +25,12 @@ namespace Hugger_Application.Controllers
     {
         private readonly IHugRepository _hugRepository;
         private readonly IHugService _hugService;
-        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public HugsController(IHugRepository hugRepository, IHugService hugService, /*IUserRepository userRepository, */ IMapper mapper)
+        public HugsController(IHugRepository hugRepository, IHugService hugService, IMapper mapper)
         {
             _hugRepository = hugRepository;
             _hugService = hugService;
-            //_userRepository = userRepository;  only one context. how to fix it?
             _mapper = mapper;
         }
 

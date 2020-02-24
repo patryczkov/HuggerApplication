@@ -14,6 +14,9 @@ namespace Hugger_Application.Data
         {
             CreateMap<Match, MatchCreateDTO>()
                 .ReverseMap();
+
+            CreateMap<Match, MatchGetDTO>().
+                ReverseMap();
         }
     }
 }
