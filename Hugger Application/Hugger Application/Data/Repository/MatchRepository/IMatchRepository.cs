@@ -11,6 +11,7 @@ namespace Hugger_Application.Data.Repository.MatchRepository
     {
         Task<Match[]> GetAllMatchesAsync();
         Task<Match[]> GetMatchesByUserIdAsync(int userId);
+        Task<Match> GetMatchByUserId_UserReceiverIdAsync(int userId, int userReceiverId);
         Task<Match[]> GetMatchesByDateOfMatch(string date);
 
     }

@@ -83,7 +83,10 @@ namespace Hugger_Application.Controllers
             }
         }
 
-        public async Task<ActionResult<MatchCreateDTO>>
+        public async Task<ActionResult<MatchCreateDTO>> Delete(int userId, int userReceiverId)
+        {
+            throw new NotImplementedException();
+        }
 
 
 

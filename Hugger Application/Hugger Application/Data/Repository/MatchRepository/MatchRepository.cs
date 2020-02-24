@@ -55,5 +55,15 @@ namespace Hugger_Application.Data.Repository.MatchRepository
             return await matchesQuery.ToArrayAsync();
         }
 
+        public async Task<Match> GetMatchByUserId_UserReceiverIdAsync(int userId, int userReceiverId)
+        {
+            _logger.LogInformation($"Getting match for user pair= {userId} and {userReceiverId}");
+
+            IQueryable<Match> matchQuery = _context.Matches;
+            matchQuery.Where(mtch => mtch.UserIDSender == userId && mtch.UserIDReceiver == userReceiverId);
+
+            return await matchQuery.FirstOrDefaultAsync();
+
+        }
     }
 }
