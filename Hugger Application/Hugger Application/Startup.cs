@@ -39,6 +39,7 @@ namespace Hugger_Application
         {
             var appSettingSection = Configuration.GetSection("AppSettings");
 
+
             services.AddDbContext<UserContext>();
             //=============Intefaces and its implementation
             services.AddScoped<IUserService, UserService>();
