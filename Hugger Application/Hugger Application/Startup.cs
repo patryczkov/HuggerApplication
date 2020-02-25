@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Hugger_Application.Data.Repository.HugRepository;
 using Hugger_Application.Data.Repository.MatchRepository;
+using Hugger_Application.Data.Repository.UserPrefRepository;
 using Hugger_Application.Helpers;
 using Hugger_Application.Models.Repository;
 using Hugger_Application.Services;
@@ -49,6 +50,7 @@ namespace Hugger_Application
             services.AddScoped<IHugRepository, HugRepository>();
             
             services.AddScoped<IMatchRepository, MatchRepository>();
+            services.AddScoped<IUserPrefRepository, UserPrefRepository>();
            
             //=========ConfigureOfApp
             services.Configure<AppSettings>(appSettingSection);

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Hugger_Application.Models.UserPreferancesDTO
 {
-    public class UserPreferencesGetDTO
+    public class UserPrefGetDTO
     {
         public int UserId { get; set; }
         public string PreferenceName { get; set; }
