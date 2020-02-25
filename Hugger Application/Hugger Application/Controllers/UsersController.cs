@@ -153,9 +153,8 @@ namespace Hugger_Application.Controllers
                      new { login = userModel.Login });
                  if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
                  */
-               
-               //TODO add proper  
-                
+
+
                 //create folder name and path
                 var gDriveService = ConnectToGDrive.GetDriveService();
                 var userFolderPathName = ($"user_{userModel.Login}_photos");
@@ -163,14 +162,14 @@ namespace Hugger_Application.Controllers
                 //create folderID
                 var userFolderId = GDriveFolderManagerService.CreateFolder(userFolderPathName, gDriveService);
                 userModel.FolderId = userFolderId;
-                
+
 
 
                 var user = _mapper.Map<User>(userModel);
                 _userRepository.Create(user);
 
                 if (await _userRepository.SaveChangesAsync()) return Created($"hugger/users/{user.Id}", _mapper.Map<UserRegisterDTO>(user));
-                else return BadRequest("Failed to add new user");  
+                else return BadRequest("Failed to add new user");
             }
             catch (Exception)
             {
@@ -283,7 +282,7 @@ namespace Hugger_Application.Controllers
         }
         private bool CheckUserIdAccessLevel(int userId)
         {
-            var jwtToken = Request.Headers["Authorization"].ToString().Split(" ")[1];     
+            var jwtToken = Request.Headers["Authorization"].ToString().Split(" ")[1];
             var handler = new JwtSecurityTokenHandler();
             var token = handler.ReadJwtToken(jwtToken);
             var tokenId = int.Parse(token.Claims.First(c => c.Type == "unique_name").Value);
