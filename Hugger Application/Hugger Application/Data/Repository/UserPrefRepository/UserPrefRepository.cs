@@ -14,7 +14,7 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
         private readonly UserContext _context;
         private readonly ILogger<UserPrefRepository> _logger;
 
-        public UserPrefRepository(UserContext context, ILogger<UserPrefRepository> logger): base(context)
+        public UserPrefRepository(UserContext context, ILogger<UserPrefRepository> logger) : base(context)
         {
             _context = context;
             _logger = logger;
@@ -46,22 +46,20 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
         {
             _logger.LogInformation($"Getting preferances for userId= {userId}");
 
-            IQueryable<UserPreference> userPreferencesQuery = _context.Users_Preferences;
 
-            userPreferencesQuery.Where(x => x.UserId == userId)
-                .Select(x => x.Preference.Name);
-
-
-            return await userPreferencesQuery.ToArrayAsync();
-
-
+            var userPreferences = _context.Users_Preferences
+                .Include(z => z.Preference)
+            .Include(z => z.User)
+            .Where(z => z.UserId == userId); 
             
+            return await userPreferences.ToArrayAsync();
+
+
         }
 
         public Task<UserPreference[]> GetAllPreferancesWithUserId()
         {
             throw new NotImplementedException();
         }
-
     }
 }

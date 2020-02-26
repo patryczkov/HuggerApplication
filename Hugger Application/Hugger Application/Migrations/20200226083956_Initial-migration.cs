@@ -2,7 +2,7 @@
 
 namespace Hugger_Application.Migrations
 {
-    public partial class init : Migration
+    public partial class Initialmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -81,18 +81,17 @@ namespace Hugger_Application.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserIDSender = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: true),
                     UserIDReceiver = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Hugs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Hugs_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Hugs_Users_UserIDSender",
+                        column: x => x.UserIDSender,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,20 +100,19 @@ namespace Hugger_Application.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MatchDate = table.Column<string>(nullable: true),
                     UserIDSender = table.Column<int>(nullable: false),
                     UserIDReceiver = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: true)
+                    MatchDate = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Matches", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Matches_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Matches_Users_UserIDSender",
+                        column: x => x.UserIDSender,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -189,14 +187,14 @@ namespace Hugger_Application.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Hugs_UserId",
+                name: "IX_Hugs_UserIDSender",
                 table: "Hugs",
-                column: "UserId");
+                column: "UserIDSender");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Matches_UserId",
+                name: "IX_Matches_UserIDSender",
                 table: "Matches",
-                column: "UserId");
+                column: "UserIDSender");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_MatchId",

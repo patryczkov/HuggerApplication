@@ -13,6 +13,9 @@ using Hugger_Application.Services;
 using Hugger_Application.Models.UserDTO;
 using System.IdentityModel.Tokens.Jwt;
 using Hugger_Application.Models.GoogleDriveAPI;
+using Hugger_Application.Data.Repository.UserPrefRepository;
+using Microsoft.Extensions.Logging;
+using Hugger_Application.Models.UserPreferancesDTO;
 
 namespace Hugger_Application.Controllers
 {
@@ -25,14 +28,20 @@ namespace Hugger_Application.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserPrefRepository _userPrefRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<UsersController> _logger;
         private readonly IUserService _userService;
         private readonly LinkGenerator _linkGenerator;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper, IUserService userService, LinkGenerator linkGenerator)
+        public UsersController(IUserRepository userRepository, IUserPrefRepository userPrefRepository,
+            IMapper mapper, ILogger<UsersController> logger,
+            IUserService userService, LinkGenerator linkGenerator)
         {
             _userRepository = userRepository;
+            _userPrefRepository = userPrefRepository;
             _mapper = mapper;
+            _logger = logger;
             _userService = userService;
             _linkGenerator = linkGenerator;
         }
@@ -61,14 +70,17 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserRegisterDTO>> Authenticate(AuthenticateUserDTO authenticateUserModel)
         {
+            _logger.LogInformation($"GET authentication for userLogin= {authenticateUserModel.Login}");
             try
             {
+
                 var user = await _userService.AuthenticateUserAsync(authenticateUserModel.Login, authenticateUserModel.Password);
                 if (user == null) return BadRequest("Username or password is not correct");
                 return Ok(_mapper.Map<UserRegisterDTO>(user));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
@@ -84,14 +96,15 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserRegisterDTO[]>> GetUsers()
         {
+            _logger.LogInformation($"GET users from database");
             try
             {
                 var users = await _userRepository.GetAllUsersAsync();
                 return Ok(_mapper.Map<UserRegisterDTO[]>(users));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
@@ -99,6 +112,7 @@ namespace Hugger_Application.Controllers
         /// Get user but following id
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="includePreferences"></param>
         /// <returns>Returns user by given id</returns>
         /// <response code="200">Return user</response> 
         /// <response code="404">User not found</response> 
@@ -110,19 +124,63 @@ namespace Hugger_Application.Controllers
 
         public async Task<ActionResult<UserRegisterDTO>> Get(int userId)
         {
+            _logger.LogInformation($"GET userId= {userId}");
             try
             {
                 var user = await _userRepository.GetUserByIDAsync(userId);
-                if (user == null) return NotFound($"User with id= {userId} could not be found");
-
+                if (user == null)
+                {
+                    _logger.LogInformation($"User with id= {userId} could not be found");
+                    return NotFound($"User with id= {userId} could not be found");
+                }
                 return Ok(_mapper.Map<UserRegisterDTO>(user));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
+
+
+        [HttpGet("{userId:int}/prefs")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserPrefGetDTO[]>> GetUserPreferences(int userId)
+        {
+            _logger.LogInformation($"GET user preferances for userId= {userId}");
+            try
+            {
+                var userPrefs = await _userPrefRepository.GetUserPreferencesAsync(userId);
+                if (userPrefs == null)
+                {
+                    _logger.LogInformation($"Userprefs for userId= {userId} not found");
+                    return NotFound();
+                }
+                return Ok(_mapper.Map<UserPrefGetDTO[]>(userPrefs));
+            }
+            catch (Exception ex )
+            {
+
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// Create new user record in database
         /// </summary>
@@ -171,9 +229,9 @@ namespace Hugger_Application.Controllers
                 if (await _userRepository.SaveChangesAsync()) return Created($"hugger/users/{user.Id}", _mapper.Map<UserRegisterDTO>(user));
                 else return BadRequest("Failed to add new user");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
 
@@ -206,8 +264,9 @@ namespace Hugger_Application.Controllers
 
                 if (await _userRepository.SaveChangesAsync()) return Ok(_mapper.Map<UserFixDTO>(exitingUser));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
 
@@ -243,8 +302,9 @@ namespace Hugger_Application.Controllers
                 if (await _userRepository.SaveChangesAsync()) return Ok(_mapper.Map<UserUpdateDTO>(exitingUser));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
             return BadRequest($"Could not update data for user with id=  {userId}");
@@ -274,12 +334,16 @@ namespace Hugger_Application.Controllers
                 _userRepository.Delete(oldUser);
                 if (await _userRepository.SaveChangesAsync()) return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
             return BadRequest("Failed to delete user");
         }
+
+
+        //TODO move it to service
         private bool CheckUserIdAccessLevel(int userId)
         {
             var jwtToken = Request.Headers["Authorization"].ToString().Split(" ")[1];
