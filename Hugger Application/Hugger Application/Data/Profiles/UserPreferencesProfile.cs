@@ -14,6 +14,8 @@ namespace Hugger_Application.Data.Profiles
         {
             CreateMap<UserPreference, UserPrefGetDTO>()
                 .ReverseMap();
+            CreateMap<UserPreference, UserPrefUpdateDTO>()
+                .ReverseMap();
         }
     }
 }

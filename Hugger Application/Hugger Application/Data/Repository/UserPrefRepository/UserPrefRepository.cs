@@ -21,25 +21,16 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
         }
 
 
-
-        public async Task<Preference[]> GetAllPreferancesAsync()
-        {
-            _logger.LogInformation("Getting all preferances from database");
-
-            IQueryable<Preference> preferencesQuery = _context.Preferences;
-
-            return await preferencesQuery.ToArrayAsync();
-
-        }
-
-        public async Task<Preference> GetPreferenceByNameAsync(string prefName)
+        public async Task<UserPreference[]> GetUsersPreferenceByNameAsync(string prefName)
         {
             _logger.LogInformation($"Getting preferance by name= {prefName}");
 
-            IQueryable<Preference> preferencesQuery = _context.Preferences;
-            preferencesQuery.Select(pref => pref.Name == prefName);
+            var preferencesQuery = _context.Users_Preferences
+                .Include(usrPref=> usrPref.Preference)
+                .Where(usrPref => usrPref.Preference.Name == prefName);
+            
 
-            return await preferencesQuery.FirstOrDefaultAsync();
+            return await preferencesQuery.ToArrayAsync();
         }
 
         public async Task<UserPreference[]> GetUserPreferencesAsync(int userId)
@@ -57,9 +48,17 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
 
         }
 
-        public Task<UserPreference[]> GetAllPreferancesWithUserId()
+        public async Task<UserPreference> GetUserPreferenceByName_UserID(string prefName, int userId)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation($"Getting preferance by name= {prefName} for userId= {userId}");
+
+            var userPreferences = _context.Users_Preferences
+               .Include(z => z.Preference)
+           .Include(z => z.User)
+           .Where(z => z.UserId == userId && z.Preference.Name == prefName );
+
+            return await userPreferences.FirstOrDefaultAsync();
+
         }
     }
 }
