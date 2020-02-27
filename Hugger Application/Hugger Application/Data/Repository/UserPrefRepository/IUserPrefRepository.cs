@@ -11,7 +11,8 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
     {
         Task<UserPreference[]> GetUsersPreferenceByNameAsync(string prefName);
         Task<UserPreference[]> GetUserPreferencesAsync(int userId);
-        Task<UserPreference> GetUserPreferenceByName_UserID(string prefName, int userid);
+        Task<UserPreference> GetUserPreferenceByName_UserIDAsync(string prefName, int userid);
+        Task<Preference> GetPreferenceByNameAsync(string prefName);
 
     }
 }

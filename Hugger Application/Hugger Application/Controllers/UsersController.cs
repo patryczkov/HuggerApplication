@@ -230,7 +230,7 @@ namespace Hugger_Application.Controllers
             _logger.LogInformation($"GET by prefName= {prefName} and userId= {userId}");
             try
             {
-                var userPref = await _userPrefRepository.GetUserPreferenceByName_UserID(prefName, userId);
+                var userPref = await _userPrefRepository.GetUserPreferenceByName_UserIDAsync(prefName, userId);
                 if (userPref == null)
                 {
                     _logger.LogInformation($"Preferences of name= {prefName} for userId= {userId} not found");
@@ -307,13 +307,20 @@ namespace Hugger_Application.Controllers
         }
 
         [HttpPost("{userId:int}/prefs")]
-        public async Task<ActionResult<UserPrefUpdateDTO>> PostUserPreferences(UserPrefUpdateDTO userPrefModel)
+        public async Task<ActionResult<UserPrefCreateDTO>> PostUserPreferences(UserPrefCreateDTO userPrefModel, int userId)
         {
             _logger.LogInformation($"POST new user preference");
             try
             {
-                var existingUserPreference = await _userPrefRepository.GetUserPreferenceByName_UserID(userPrefModel.PreferenceName, userPrefModel.UserId);
+                var existingUserPreference = await _userPrefRepository.GetUserPreferenceByName_UserIDAsync(userPrefModel.PreferenceName, userPrefModel.UserId);
                 if (existingUserPreference != null) return BadRequest($"This user has this preference");
+
+                var prefId = await _userPrefRepository.GetPreferenceByNameAsync(userPrefModel.PreferenceName);
+
+                _logger.LogInformation($"Giving userId and prefId into model");
+                userPrefModel.PreferenceId = prefId.Id;
+                userPrefModel.UserId = userId;
+
 
                 _logger.LogInformation($"Mapping userPreference");
                 var userPref = _mapper.Map<UserPreference>(userPrefModel);
@@ -321,7 +328,7 @@ namespace Hugger_Application.Controllers
 
                 if (await _userPrefRepository.SaveChangesAsync())
                     return Created($"hugger/users/{userPrefModel.UserId}/prefs/{userPrefModel.PreferenceName}",
-                        _mapper.Map<UserPrefUpdateDTO>(userPrefModel));
+                        _mapper.Map<UserPrefCreateDTO>(userPrefModel));
                 else return BadRequest("Failed to add new user preference");
             }
             catch (Exception ex)

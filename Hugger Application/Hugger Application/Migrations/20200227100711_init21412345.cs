@@ -2,7 +2,7 @@
 
 namespace Hugger_Application.Migrations
 {
-    public partial class Initialmigration : Migration
+    public partial class init21412345 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -119,13 +119,15 @@ namespace Hugger_Application.Migrations
                 name: "Users_Characteristics",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false),
-                    CharacteristicId = table.Column<int>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
+                    CharacteristicId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users_Characteristics", x => new { x.UserId, x.CharacteristicId });
+                    table.PrimaryKey("PK_Users_Characteristics", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Users_Characteristics_Characteristics_CharacteristicId",
                         column: x => x.CharacteristicId,
@@ -144,13 +146,15 @@ namespace Hugger_Application.Migrations
                 name: "Users_Preferences",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false),
-                    PreferenceId = table.Column<int>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
+                    PreferenceId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users_Preferences", x => new { x.UserId, x.PreferenceId });
+                    table.PrimaryKey("PK_Users_Preferences", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Users_Preferences_Preferences_PreferenceId",
                         column: x => x.PreferenceId,
@@ -212,9 +216,19 @@ namespace Hugger_Application.Migrations
                 column: "CharacteristicId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_Characteristics_UserId",
+                table: "Users_Characteristics",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Preferences_PreferenceId",
                 table: "Users_Preferences",
                 column: "PreferenceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Preferences_UserId",
+                table: "Users_Preferences",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

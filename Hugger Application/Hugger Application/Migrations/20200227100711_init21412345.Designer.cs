@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hugger_Application.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20200226083956_Initial-migration")]
-    partial class Initialmigration
+    [Migration("20200227100711_init21412345")]
+    partial class init21412345
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -180,36 +180,50 @@ namespace Hugger_Application.Migrations
 
             modelBuilder.Entity("Hugger_Web_Application.Models.UserCharacteristic", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CharacteristicId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId", "CharacteristicId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CharacteristicId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Users_Characteristics");
                 });
 
             modelBuilder.Entity("Hugger_Web_Application.Models.UserPreference", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("PreferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId", "PreferenceId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PreferenceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Users_Preferences");
                 });
