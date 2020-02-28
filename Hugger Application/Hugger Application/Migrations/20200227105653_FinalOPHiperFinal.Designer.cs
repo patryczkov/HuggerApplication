@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hugger_Application.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20200227100711_init21412345")]
-    partial class init21412345
+    [Migration("20200227105653_FinalOPHiperFinal")]
+    partial class FinalOPHiperFinal
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

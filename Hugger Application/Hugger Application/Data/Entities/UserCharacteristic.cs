@@ -12,9 +12,10 @@ namespace Hugger_Web_Application.Models
         [Key]
         public int Id { get; set; }
         public string Value { get; set; }
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public virtual User User { get; set; }
-  
+        [ForeignKey("Characteristic")]
         public int CharacteristicId { get; set; }
         public virtual Characteristic Characteristic { get; set; }
 

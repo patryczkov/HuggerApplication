@@ -213,7 +213,7 @@ namespace Hugger_Application.Controllers
         /// <summary>
         /// Get user preference byd name and userId
         /// </summary>
-        /// <param name="prefName"></param>
+        /// <param name="prefId"></param>
         /// <param name="userId"></param>
         /// <returns>Preferences of users</returns>
         /// <response code="200">Return userPreferences</response> 
@@ -225,16 +225,16 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserPrefGetDTO>> GetUserPrefByNameAndUserId(string prefName, int userId)
+        public async Task<ActionResult<UserPrefGetDTO>> GetUserPrefByNameAndUserId(int prefId, int userId)
         {
-            _logger.LogInformation($"GET by prefName= {prefName} and userId= {userId}");
+            _logger.LogInformation($"GET by prefId= {prefId} and userId= {userId}");
             try
             {
-                var userPref = await _userPrefRepository.GetUserPreferenceByName_UserIDAsync(prefName, userId);
+                var userPref = await _userPrefRepository.GetUserPreferenceByID_UserIDAsync(prefId, userId);
                 if (userPref == null)
                 {
-                    _logger.LogInformation($"Preferences of name= {prefName} for userId= {userId} not found");
-                    return NotFound($"Preference of name= {prefName} for user not found");
+                    _logger.LogInformation($"Preferences of name= {prefId} for userId= {userId} not found");
+                    return NotFound($"Preference of name= {prefId} for user not found");
                 }
                 return Ok(_mapper.Map<UserPrefGetDTO>(userPref));
             }
@@ -312,18 +312,25 @@ namespace Hugger_Application.Controllers
             _logger.LogInformation($"POST new user preference");
             try
             {
-                var existingUserPreference = await _userPrefRepository.GetUserPreferenceByName_UserIDAsync(userPrefModel.PreferenceName, userPrefModel.UserId);
+                var preference = await _userPrefRepository.GetPreferenceByNameAsync(userPrefModel.PreferenceName);
+
+
+                var existingUserPreference = await _userPrefRepository.GetUserPreferenceByID_UserIDAsync(userPrefModel.PreferenceId, userPrefModel.UserId);
                 if (existingUserPreference != null) return BadRequest($"This user has this preference");
 
-                var prefId = await _userPrefRepository.GetPreferenceByNameAsync(userPrefModel.PreferenceName);
+                //var prefId = await _userPrefRepository.GetPreferenceByNameAsync(userPrefModel.PreferenceName);
 
                 _logger.LogInformation($"Giving userId and prefId into model");
-                userPrefModel.PreferenceId = prefId.Id;
+                userPrefModel.PreferenceId = preference.Id;
                 userPrefModel.UserId = userId;
-
+                
 
                 _logger.LogInformation($"Mapping userPreference");
+                //in this moment it's creating new pref- why?
                 var userPref = _mapper.Map<UserPreference>(userPrefModel);
+
+                userPref.Preference = preference;
+
                 _userPrefRepository.Create(userPref);
 
                 if (await _userPrefRepository.SaveChangesAsync())

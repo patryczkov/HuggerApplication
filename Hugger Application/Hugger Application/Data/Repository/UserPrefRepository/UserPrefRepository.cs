@@ -48,14 +48,14 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
 
         }
 
-        public async Task<UserPreference> GetUserPreferenceByName_UserIDAsync(string prefName, int userId)
+        public async Task<UserPreference> GetUserPreferenceByID_UserIDAsync(int prefId, int userId)
         {
-            _logger.LogInformation($"Getting preferance by name= {prefName} for userId= {userId}");
+            _logger.LogInformation($"Getting preferanceId= {prefId} for userId= {userId}");
 
             var userPreferences = _context.Users_Preferences
                .Include(z => z.Preference)
-           .Include(z => z.User)
-           .Where(z => z.UserId == userId && z.Preference.Name == prefName );
+               .Include(z => z.User)
+               .Where(z => z.UserId == userId && z.Preference.Id == prefId );
 
             return await userPreferences.FirstOrDefaultAsync();
 

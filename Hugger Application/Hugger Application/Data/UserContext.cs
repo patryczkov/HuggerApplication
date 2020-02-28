@@ -40,8 +40,8 @@ namespace Hugger_Web_Application.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //join table User - Characteristic
-            modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new {UserChar.Id });
-            
+           // modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new {UserChar.Id });
+            /*
             modelBuilder.Entity<UserCharacteristic>()
                 .HasOne(usrChar => usrChar.User)
                 .WithMany(usr => usr.UserCharacteristics)
@@ -52,9 +52,9 @@ namespace Hugger_Web_Application.Models
                 .WithMany(pref => pref.UserCharacteristics)
                 .HasForeignKey(usrPref => usrPref.CharacteristicId);
             //join table User - Preference
-            
-            modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.Id });
-            
+            */
+         //   modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.Id });
+            /*
             modelBuilder.Entity<UserPreference>()
                 .HasOne(usrPref => usrPref.User)
                 .WithMany(usr => usr.UsersPreferences)
@@ -65,7 +65,7 @@ namespace Hugger_Web_Application.Models
                 .WithMany(pref => pref.UsersPreferences)
                 .HasForeignKey(usrPref => usrPref.PreferenceId);
                 
-    
+    */
         }
 
     }

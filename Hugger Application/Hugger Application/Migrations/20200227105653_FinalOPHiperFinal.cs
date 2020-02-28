@@ -2,7 +2,7 @@
 
 namespace Hugger_Application.Migrations
 {
-    public partial class init21412345 : Migration
+    public partial class FinalOPHiperFinal : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
