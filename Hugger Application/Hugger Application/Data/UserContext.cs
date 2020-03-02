@@ -20,7 +20,9 @@ namespace Hugger_Web_Application.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder contextOptionsBuilder)
         {
-            contextOptionsBuilder.UseSqlServer(_configuration.GetConnectionString("HuggerContext"));
+            //contextOptionsBuilder.UseSqlServer(_configuration.GetConnectionString("HuggerContext"));
+            contextOptionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgresContext"));
+
         }
 
         public DbSet<User> Users { get; set; }
@@ -40,7 +42,7 @@ namespace Hugger_Web_Application.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //join table User - Characteristic
-           // modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new {UserChar.Id });
+            modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new {UserChar.CharacteristicId, UserChar.UserId});
             /*
             modelBuilder.Entity<UserCharacteristic>()
                 .HasOne(usrChar => usrChar.User)
@@ -53,7 +55,7 @@ namespace Hugger_Web_Application.Models
                 .HasForeignKey(usrPref => usrPref.CharacteristicId);
             //join table User - Preference
             */
-         //   modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.Id });
+           modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.PreferenceId, UserPref.UserId });
             /*
             modelBuilder.Entity<UserPreference>()
                 .HasOne(usrPref => usrPref.User)

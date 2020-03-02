@@ -32,18 +32,17 @@ namespace Hugger_Application.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<UsersController> _logger;
         private readonly IUserService _userService;
-        private readonly LinkGenerator _linkGenerator;
+        //private readonly LinkGenerator _linkGenerator;
 
         public UsersController(IUserRepository userRepository, IUserPrefRepository userPrefRepository,
             IMapper mapper, ILogger<UsersController> logger,
-            IUserService userService, LinkGenerator linkGenerator)
+            IUserService userService)
         {
             _userRepository = userRepository;
             _userPrefRepository = userPrefRepository;
             _mapper = mapper;
             _logger = logger;
             _userService = userService;
-            _linkGenerator = linkGenerator;
         }
         /// <summary>
         /// Authenticate user by model which include login and password
@@ -272,11 +271,6 @@ namespace Hugger_Application.Controllers
                 if (existingUser != null) return BadRequest($"{userModel.Id} in use");
 
 
-                /* var location = _linkGenerator.GetPathByAction("Get",
-                     "Users",
-                     new { login = userModel.Login });
-                 if (string.IsNullOrWhiteSpace(location)) return BadRequest($"{userModel.Login} is not allowed");
-                 */
 
 
                 _logger.LogInformation($"Connecting to gdrive");

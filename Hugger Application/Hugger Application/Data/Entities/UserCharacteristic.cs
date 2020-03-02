@@ -10,7 +10,6 @@ namespace Hugger_Web_Application.Models
     public class UserCharacteristic
     {
         [Key]
-        public int Id { get; set; }
         public string Value { get; set; }
         [ForeignKey("User")]
         public int UserId { get; set; }
