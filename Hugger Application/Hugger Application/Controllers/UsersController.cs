@@ -32,9 +32,8 @@ namespace Hugger_Application.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<UsersController> _logger;
         private readonly IUserService _userService;
-        //private readonly LinkGenerator _linkGenerator;
         /// <summary>
-        /// Contructor for controller
+        /// Constructor for controller
         /// </summary>
         /// <param name="userRepository"></param>
         /// <param name="userPrefRepository"></param>
@@ -263,7 +262,6 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        //linkgenerator not working yet
         public async Task<ActionResult<UserRegisterDTO>> PostNewUser(UserRegisterDTO userModel)
         {
             _logger.LogInformation($"POST new user");
@@ -400,6 +398,7 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserUpdateDTO>> Patch(int userId, UserUpdateDTO userModel)
         {
+            _logger.LogInformation($"PATCH user data for userId= {userId}");
             try
             {
                 var exitingUser = await _userRepository.GetUserByIDAsync(userId);
@@ -436,6 +435,7 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserPrefGetDTO>> PatchUserPref(int userId, int prefId, UserPrefUpdateDTO updateDTO)
         {
+            _logger.LogInformation($"PATCH user preference for userID= {userId}");
             try
             {
                 var existingUserPref = await _userPrefRepository.GetUserPreferenceByID_UserIDAsync(prefId, userId);
@@ -470,6 +470,7 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserRegisterDTO>> Delete(int userId)
         {
+            _logger.LogInformation($"DELETE userID= {userId}");
             try
             {
                 var oldUser = await _userRepository.GetUserByIDAsync(userId);
