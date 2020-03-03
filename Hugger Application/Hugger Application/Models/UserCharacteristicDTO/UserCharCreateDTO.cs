@@ -15,4 +15,4 @@ namespace Hugger_Application.Models.UserCharacteristicDTO
         public string Value { get; set; }
     }
 }
-}
+

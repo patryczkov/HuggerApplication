@@ -164,7 +164,7 @@ namespace Hugger_Application.Controllers
             _logger.LogInformation($"GET user preferances for userId= {userId}");
             try
             {
-                var userPrefs = await _userPrefRepository.GetUserPreferencesAsync(userId);
+                var userPrefs = await _userPrefRepository.GetUserPreferencesByUserIdAsync(userId);
                 if (userPrefs == null)
                 {
                     _logger.LogInformation($"Userprefs for userId= {userId} not found");
@@ -199,7 +199,7 @@ namespace Hugger_Application.Controllers
             _logger.LogInformation($"GET by prefName= {prefName}");
             try
             {
-                var prefs = await _userPrefRepository.GetPreferenceByNameAsync(prefName);
+                var prefs = await _userPrefRepository.GetPreferenceByPrefNameAsync(prefName);
                 if (prefs == null)
                 {
                     _logger.LogInformation($"Preferences of name= {prefName} not found");

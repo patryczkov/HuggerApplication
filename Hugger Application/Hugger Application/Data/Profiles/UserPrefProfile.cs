@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Hugger_Application.Data.Profiles
 {
-    public class UserPreferencesProfile: Profile
+    public class UserPrefProfile: Profile
     {
-        public UserPreferencesProfile()
+        public UserPrefProfile()
         {
             CreateMap<UserPreference, UserPrefGetDTO>()
                 .ReverseMap();

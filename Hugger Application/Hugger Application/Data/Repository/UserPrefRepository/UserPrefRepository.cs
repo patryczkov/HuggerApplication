@@ -20,7 +20,7 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
             _logger = logger;
         }
         
-        public async Task<UserPreference[]> GetUserPreferencesAsync(int userId)
+        public async Task<UserPreference[]> GetUserPreferencesByUserIdAsync(int userId)
         {
             _logger.LogInformation($"Getting preferances for userId= {userId}");
 
@@ -45,7 +45,7 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
 
         }
 
-        public async Task<Preference> GetPreferenceByNameAsync(string prefName)
+        public async Task<Preference> GetPreferenceByPrefNameAsync(string prefName)
         {
             _logger.LogInformation($"Getting preference= {prefName}");
 
@@ -55,7 +55,7 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
             return await preference.FirstOrDefaultAsync();
         }
 
-        public  async Task<Preference> GetPreferenceNameByIdAsync(int prefId)
+        public  async Task<Preference> GetPreferenceByPrefIdAsync(int prefId)
         {
             _logger.LogInformation($"Getting preference= {prefId}");
 
