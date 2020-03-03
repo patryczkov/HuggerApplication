@@ -33,7 +33,14 @@ namespace Hugger_Application.Controllers
         private readonly ILogger<UsersController> _logger;
         private readonly IUserService _userService;
         //private readonly LinkGenerator _linkGenerator;
-
+        /// <summary>
+        /// Contructor for controller
+        /// </summary>
+        /// <param name="userRepository"></param>
+        /// <param name="userPrefRepository"></param>
+        /// <param name="mapper"></param>
+        /// <param name="logger"></param>
+        /// <param name="userService"></param>
         public UsersController(IUserRepository userRepository, IUserPrefRepository userPrefRepository,
             IMapper mapper, ILogger<UsersController> logger,
             IUserService userService)
@@ -184,8 +191,6 @@ namespace Hugger_Application.Controllers
         /// <response code="404">UserPreferences not found</response> 
         /// <response code="500">Server not responding</response>
 
-
-
         [HttpGet("prefs/{prefName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -195,7 +200,7 @@ namespace Hugger_Application.Controllers
             _logger.LogInformation($"GET by prefName= {prefName}");
             try
             {
-                var prefs = await _userPrefRepository.GetUsersPreferenceByNameAsync(prefName);
+                var prefs = await _userPrefRepository.GetPreferenceByNameAsync(prefName);
                 if (prefs == null)
                 {
                     _logger.LogInformation($"Preferences of name= {prefName} not found");
@@ -270,9 +275,7 @@ namespace Hugger_Application.Controllers
                 existingUser = await _userRepository.GetUserByIDAsync(userModel.Id);
                 if (existingUser != null) return BadRequest($"{userModel.Id} in use");
 
-
-
-
+                //TODO move it to service
                 _logger.LogInformation($"Connecting to gdrive");
                 var gDriveService = ConnectToGDrive.GetDriveService();
 
@@ -300,58 +303,50 @@ namespace Hugger_Application.Controllers
 
         }
 
-        [HttpPost("{userId:int}/prefs")]
-        public async Task<ActionResult<UserPrefCreateDTO>> PostUserPreferences(UserPrefCreateDTO userPrefModel, int userId)
+        /// <summary>
+        /// Create new user preference
+        /// </summary>
+        /// <param name="userPrefModel"></param>
+        /// <returns>New userPref to database</returns>
+        /// <response code="201">User preference created</response>
+        /// <response code="400">User preference exist</response> 
+        /// <response code="500">Server not responding</response>
+
+
+
+        [HttpPost("newUsrPrefs")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserPrefCreateDTO>> PostUserPreferences(UserPrefCreateDTO userPrefModel)
         {
             _logger.LogInformation($"POST new user preference");
             try
             {
-                var preference = await _userPrefRepository.GetPreferenceByNameAsync(userPrefModel.PreferenceName);
-
-
                 var existingUserPreference = await _userPrefRepository.GetUserPreferenceByID_UserIDAsync(userPrefModel.PreferenceId, userPrefModel.UserId);
                 if (existingUserPreference != null) return BadRequest($"This user has this preference");
 
-                //var prefId = await _userPrefRepository.GetPreferenceByNameAsync(userPrefModel.PreferenceName);
-
-                _logger.LogInformation($"Giving userId and prefId into model");
-                userPrefModel.PreferenceId = preference.Id;
-                userPrefModel.UserId = userId;
-                
 
                 _logger.LogInformation($"Mapping userPreference");
-                //in this moment it's creating new pref- why?
                 var userPref = _mapper.Map<UserPreference>(userPrefModel);
-
-                userPref.Preference = preference;
-
+                _logger.LogInformation("Creating new userPreference");
                 _userPrefRepository.Create(userPref);
 
                 if (await _userPrefRepository.SaveChangesAsync())
-                    return Created($"hugger/users/{userPrefModel.UserId}/prefs/{userPrefModel.PreferenceName}",
+                    return Created($"hugger/users/{userPrefModel.UserId}/prefs/{userPrefModel.PreferenceId}",
                         _mapper.Map<UserPrefCreateDTO>(userPrefModel));
+
                 else return BadRequest("Failed to add new user preference");
             }
             catch (Exception ex)
             {
-
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
 
-
-
-
-
-
-
-
-
-
-
         /// <summary>
-        /// Updat/fix whole user data, by certain id
+        /// Update/fix whole user data, by certain id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="userModel"></param>
@@ -368,12 +363,12 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserFixDTO>> Put(int userId, UserFixDTO userModel)
         {
+            _logger.LogInformation($"PUT update/fix for userId= {userId}");
             try
             {
                 var exitingUser = await _userRepository.GetUserByIDAsync(userId);
-
                 if (exitingUser == null) return NotFound($"Could not find the user with id {userId}");
-
+                
                 _mapper.Map(userModel, exitingUser);
 
                 if (await _userRepository.SaveChangesAsync()) return Ok(_mapper.Map<UserFixDTO>(exitingUser));
@@ -383,12 +378,12 @@ namespace Hugger_Application.Controllers
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
-
             return BadRequest($"Could not update data for user with id=  {userId}");
         }
 
+
         /// <summary>
-        /// Update some date of user
+        /// Update data of user
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="userModel"></param>
@@ -408,7 +403,6 @@ namespace Hugger_Application.Controllers
             try
             {
                 var exitingUser = await _userRepository.GetUserByIDAsync(userId);
-
                 if (exitingUser == null) return NotFound($"Could not find the user with id {userId}");
 
                 _mapper.Map(userModel, exitingUser);
@@ -422,6 +416,42 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
             return BadRequest($"Could not update data for user with id=  {userId}");
+        }
+
+        /// <summary>
+        /// Update user preference value 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="prefId"></param>
+        /// <param name="updateDTO"></param>
+        /// <returns>Updated user preference value</returns> 
+        /// <response code="200">User preference succesfully updated</response>
+        /// <response code="400">User preference couldn't be updated</response> 
+        /// <response code="404">User preference couldn't be found</response> 
+        /// <response code="500">Server not responding</response>
+        [HttpPatch("{userId:int}/prefs/{prefId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserPrefGetDTO>> PatchUserPref(int userId, int prefId, UserPrefUpdateDTO updateDTO)
+        {
+            try
+            {
+                var existingUserPref = await _userPrefRepository.GetUserPreferenceByID_UserIDAsync(prefId, userId);
+                if (existingUserPref == null) return NotFound($"Could not find the userPreference");
+
+                _mapper.Map(updateDTO, existingUserPref);
+
+                if (await _userPrefRepository.SaveChangesAsync()) return Ok(_mapper.Map<UserPrefGetDTO>(existingUserPref)); 
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+            return BadRequest("Could not update data for userPreference");
         }
 
         /// <summary>

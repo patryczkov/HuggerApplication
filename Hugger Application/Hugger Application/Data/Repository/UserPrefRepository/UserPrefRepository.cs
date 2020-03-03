@@ -19,33 +19,17 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
             _context = context;
             _logger = logger;
         }
-
-
-        public async Task<UserPreference[]> GetUsersPreferenceByNameAsync(string prefName)
-        {
-            _logger.LogInformation($"Getting preferance by name= {prefName}");
-
-            var preferencesQuery = _context.Users_Preferences
-                .Include(usrPref=> usrPref.Preference)
-                .Where(usrPref => usrPref.Preference.Name == prefName);
-            
-
-            return await preferencesQuery.ToArrayAsync();
-        }
-
+        
         public async Task<UserPreference[]> GetUserPreferencesAsync(int userId)
         {
             _logger.LogInformation($"Getting preferances for userId= {userId}");
 
-
             var userPreferences = _context.Users_Preferences
                 .Include(z => z.Preference)
-            .Include(z => z.User)
-            .Where(z => z.UserId == userId); 
+                .Include(z => z.User)
+                .Where(z => z.UserId == userId); 
             
             return await userPreferences.ToArrayAsync();
-
-
         }
 
         public async Task<UserPreference> GetUserPreferenceByID_UserIDAsync(int prefId, int userId)
@@ -67,6 +51,16 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
 
             var preference = _context.Preferences
                 .Where(pref => pref.Name == prefName);
+
+            return await preference.FirstOrDefaultAsync();
+        }
+
+        public  async Task<Preference> GetPreferenceNameByIdAsync(int prefId)
+        {
+            _logger.LogInformation($"Getting preference= {prefId}");
+
+            var preference = _context.Preferences
+                .Where(pref => pref.Id == prefId);
 
             return await preference.FirstOrDefaultAsync();
         }

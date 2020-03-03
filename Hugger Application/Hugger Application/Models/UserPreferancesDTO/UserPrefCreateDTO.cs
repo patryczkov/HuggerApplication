@@ -10,7 +10,6 @@ namespace Hugger_Application.Models.UserPreferancesDTO
     {
         public int UserId { get; set; }
         public int PreferenceId { get; set; }
-        public string  PreferenceName { get; set; }
         [Required]
         [MaxLength(16)]
         public string Value { get; set; }
