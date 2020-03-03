@@ -20,16 +20,16 @@ namespace Hugger_Web_Application.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder contextOptionsBuilder)
         {
-            contextOptionsBuilder.UseSqlServer(_configuration.GetConnectionString("HuggerContext"));
+            //contextOptionsBuilder.UseSqlServer(_configuration.GetConnectionString("HuggerContext"));
+            contextOptionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgresContext"));
+
         }
-
-
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserCharacteristic> Users_Characteristics { get; set; }
         public DbSet<Characteristic> Characteristics { get; set; }
 
-       
+
 
         public DbSet<Localization> Localizations { get; set; }
         public DbSet<Preference> Preferences { get; set; }
@@ -42,45 +42,34 @@ namespace Hugger_Web_Application.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //join table User - Characteristic
-            modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new { UserChar.UserId, UserChar.CharacteristicId });
+            modelBuilder.Entity<UserCharacteristic>().HasKey(UserChar => new {UserChar.CharacteristicId, UserChar.UserId});
+            /*
+            modelBuilder.Entity<UserCharacteristic>()
+                .HasOne(usrChar => usrChar.User)
+                .WithMany(usr => usr.UserCharacteristics)
+                .HasForeignKey(usrPref => usrPref.UserId);
 
             modelBuilder.Entity<UserCharacteristic>()
-                .HasOne(UserChar => UserChar.User)
-                .WithMany(Usr => Usr.UserCharacteristics)
-                .HasForeignKey(UserChar => UserChar.UserId);
-
-            modelBuilder.Entity<UserCharacteristic>()
-                .HasOne(UserChar => UserChar.Characteristic)
-                .WithMany(Char => Char.UserCharacteristics)
-                .HasForeignKey(UserChar => UserChar.CharacteristicId);
-
+                .HasOne(usrChar => usrChar.Characteristic)
+                .WithMany(pref => pref.UserCharacteristics)
+                .HasForeignKey(usrPref => usrPref.CharacteristicId);
             //join table User - Preference
-            modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.UserId, UserPref.PreferenceId });
+            */
+           modelBuilder.Entity<UserPreference>().HasKey(UserPref => new { UserPref.PreferenceId, UserPref.UserId });
+            /*
+            modelBuilder.Entity<UserPreference>()
+                .HasOne(usrPref => usrPref.User)
+                .WithMany(usr => usr.UsersPreferences)
+                .HasForeignKey(usrPref => usrPref.UserId);
 
             modelBuilder.Entity<UserPreference>()
-                .HasOne(UserPref => UserPref.User)
-                .WithMany(Usr => Usr.UsersPreferences)
-                .HasForeignKey(UserPref => UserPref.UserId);
-
-            modelBuilder.Entity<UserPreference>()
-                .HasOne(UserPref => UserPref.Preference)
-                .WithMany(Pref => Pref.UsersPreferences)
-                .HasForeignKey(UserPref => UserPref.PreferenceId);
-     
-
-            //join table User - Match (Hugs)
-           /* modelBuilder.Entity<Hug>().HasKey(Hg => new {Hg.UserIDSender, Hg.UserIDReceiver });
-
-             modelBuilder.Entity<Hug>()
-                 .HasOne(Hg => Hg.User)
-                 .WithMany(Usr => Usr.Hugs)
-                 .HasForeignKey(Hg => Hg.UserIDSender);
-
-             modelBuilder.Entity<Hug>()
-                 .HasOne(Hg => Hg.User)
-                 .WithMany(Usr => Usr.Hugs)
-                 .HasForeignKey(Hg => Hg.UserIDReceiver);*/
-                 
+                .HasOne(usrPref => usrPref.Preference)
+                .WithMany(pref => pref.UsersPreferences)
+                .HasForeignKey(usrPref => usrPref.PreferenceId);
+                
+    */
         }
+
     }
 }
+

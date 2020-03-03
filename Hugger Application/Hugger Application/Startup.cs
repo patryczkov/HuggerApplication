@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using Hugger_Application.Data.Repository.HugRepository;
 using Hugger_Application.Data.Repository.MatchRepository;
+using Hugger_Application.Data.Repository.UserPrefRepository;
 using Hugger_Application.Helpers;
 using Hugger_Application.Models.Repository;
 using Hugger_Application.Services;
@@ -16,6 +15,7 @@ using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,16 +39,22 @@ namespace Hugger_Application
         {
             var appSettingSection = Configuration.GetSection("AppSettings");
 
+
             services.AddDbContext<UserContext>();
+
+
+
+
             //=============Intefaces and its implementation
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
-            
+
             services.AddScoped<IHugService, HugService>();
             services.AddScoped<IHugRepository, HugRepository>();
-            
+
             services.AddScoped<IMatchRepository, MatchRepository>();
-           
+            services.AddScoped<IUserPrefRepository, UserPrefRepository>();
+
             //=========ConfigureOfApp
             services.Configure<AppSettings>(appSettingSection);
             var appSettings = appSettingSection.Get<AppSettings>();

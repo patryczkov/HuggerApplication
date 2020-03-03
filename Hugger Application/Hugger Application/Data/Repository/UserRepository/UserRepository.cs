@@ -61,5 +61,6 @@ namespace Hugger_Application.Models.Repository
 
             return await usersQuery.FirstOrDefaultAsync();
         }
+
     }
 }

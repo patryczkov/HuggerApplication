@@ -1,0 +1,18 @@
+﻿using Hugger_Application.Models.Repository;
+using Hugger_Web_Application.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Hugger_Application.Data.Repository.UserPrefRepository
+{
+    public interface IUserPrefRepository : IRepository<UserPreference>
+    {
+        Task<UserPreference[]> GetUserPreferencesAsync(int userId);
+        Task<UserPreference> GetUserPreferenceByID_UserIDAsync(int predId, int userId);
+        Task<Preference> GetPreferenceByNameAsync(string prefName);
+        Task<Preference> GetPreferenceNameByIdAsync(int prefId);
+
+    }
+}
