@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hugger_Application.Models.TokenModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

@@ -9,13 +9,13 @@ namespace Hugger_Application.Services.TokenServices
 {
     public class JwtHandler : IJwtHandler
     {
-        private readonly JwtOptions _options;
+        private readonly JWTOptions _options;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         private readonly SymmetricSecurityKey _securityKey;
         private readonly SigningCredentials _signingCredentials;
         private readonly JwtHeader _jwtHeader;
 
-        public JwtHandler(IOptions<JwtOptions> options)
+        public JwtHandler(IOptions<JWTOptions> options)
         {
             _options = options.Value;
             _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
@@ -34,8 +34,8 @@ namespace Hugger_Application.Services.TokenServices
             var payload = new JwtPayload
             {
                 {"sub", login},
-                {"aid", userId},
-                {"rid", userRoleId},
+                {"aid", userId.ToString()},
+                {"rid", userRoleId.ToString()},
                 {"iss", _options.Issuer},
                 {"iat", iat},
                 {"exp", exp},

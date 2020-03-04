@@ -36,7 +36,7 @@ namespace Hugger_Application.Services.AccountServices
             {
                 throw new Exception("Refresh token was revoked");
             }
-            var jwt = _jwtHandler.Create(refreshToken.Login); ;
+            var jwt = _jwtHandler.Create(refreshToken.Login, refreshToken.UserId, refreshToken.UserRoleId); ;
             jwt.RefreshToken = refreshToken.Token;
 
             return jwt;
@@ -69,7 +69,7 @@ namespace Hugger_Application.Services.AccountServices
                 .Replace("=", string.Empty)
                 .Replace("/", string.Empty);
             jwt.RefreshToken = refreshToken;
-            _refreshTokens.Add(new RefreshToken { Login = login, Token = refreshToken });
+            _refreshTokens.Add(new RefreshToken { Login = login, UserId=user.Id, UserRoleId=user.ServerRoleId, Token = refreshToken });
 
             return jwt;
         }
