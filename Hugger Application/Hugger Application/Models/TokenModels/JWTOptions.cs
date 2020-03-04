@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Hugger_Application.Models.TokenModels
 {
-    public class JWTOptions
+    public class JwtOptions
     {
         public string SecretKey { get; set; }
         public int ExpiryMinutes { get; set; }
