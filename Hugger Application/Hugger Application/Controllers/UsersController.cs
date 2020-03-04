@@ -533,6 +533,44 @@ namespace Hugger_Application.Controllers
             return BadRequest("Could not update data for userPreference");
         }
 
+
+        /// <summary>
+        /// Update user characteristic value 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="charId"></param>
+        /// <param name="updateUserCharDTO"></param>
+        /// <returns>Updated user characteristic value</returns> 
+        /// <response code="200">User characteristic succesfully updated</response>
+        /// <response code="400">User characteristic couldn't be updated</response> 
+        /// <response code="404">User characteristic couldn't be found</response> 
+        /// <response code="500">Server not responding</response>
+        [HttpPatch("{userId:int}/chars/{charId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserCharGetDTO>> PatchUserChar(int userId, int charId, UserCharUpdateDTO updateUserCharDTO)
+        {
+            _logger.LogInformation($"PATCH user characteristic for userID= {userId}");
+            try
+            {
+                var existingUserChar = await _userCharRepository.GetUserCharacteristicByCharID_UserIDAsync(charId, userId);
+                if (existingUserChar == null) return NotFound($"Could not find the user characteristic");
+
+                _mapper.Map(updateUserCharDTO, existingUserChar);
+
+                if (await _userCharRepository.SaveChangesAsync()) return Ok(_mapper.Map<UserCharGetDTO>(existingUserChar));
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+            return BadRequest("Could not update data for userPreference");
+        }
+
         /// <summary>
         /// Delete user with certain id
         /// </summary>
