@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Hugger_Web_Application.Models;
 using Microsoft.Extensions.Configuration;
 using Hugger_Application.Data;
+using Hugger_Application.Data.Entities;
 
 namespace Hugger_Web_Application.Models
 {
@@ -29,9 +30,9 @@ namespace Hugger_Web_Application.Models
         public DbSet<UserCharacteristic> Users_Characteristics { get; set; }
         public DbSet<Characteristic> Characteristics { get; set; }
 
-
-
+        public DbSet<ServerRole> ServerRoles { get; set; }
         public DbSet<Localization> Localizations { get; set; }
+       
         public DbSet<Preference> Preferences { get; set; }
         public DbSet<UserPreference> Users_Preferences { get; set; }
         public DbSet<Hug> Hugs { get; set; }

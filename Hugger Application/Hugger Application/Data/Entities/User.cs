@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hugger_Application.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,10 +17,14 @@ namespace Hugger_Web_Application.Models
         public  string FolderPath { get; set; }
         public string FolderId { get; set; }
         public int LastWatchedUserId { get; set; }
+
         [ForeignKey("Localizations")]
         public int LocalizationId { get; set; }
-        
         public virtual Localization Localization { get; set; }
+        
+        [ForeignKey("ServerRoles")]
+        public int ServerRoleId { get; set; }
+        public virtual ServerRole ServerRole { get; set; }
 
         public string Token { get; set; }
         public string Email { get; set; }
