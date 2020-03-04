@@ -55,7 +55,7 @@ namespace Hugger_Application.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, currentUser.Id.ToString())
+                    new Claim(ClaimTypes.Name, currentUser.Id.ToString(), currentUser.ServerRoleId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
