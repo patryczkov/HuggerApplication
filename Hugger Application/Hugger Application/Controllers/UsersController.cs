@@ -122,7 +122,6 @@ namespace Hugger_Application.Controllers
         /// Get user but following id
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="includePreferences"></param>
         /// <returns>Returns user by given id</returns>
         /// <response code="200">Return user</response> 
         /// <response code="404">User not found</response> 
@@ -219,10 +218,6 @@ namespace Hugger_Application.Controllers
         }
 
 
-
-
-
-
         /// <summary>
         /// Get preference by name
         /// </summary>
@@ -256,6 +251,39 @@ namespace Hugger_Application.Controllers
             }
         }
         /// <summary>
+        /// Get characteristic by name
+        /// </summary>
+        /// <param name="charName"></param>
+        /// <returns>Preferences of users</returns>
+        /// <response code="200">Return user characteristic</response> 
+        /// <response code="404">User characteristic not found</response> 
+        /// <response code="500">Server not responding</response>
+        [HttpGet("chars/{charName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserCharGetDTO[]>> GetUserCharacteristicsName(string charName)
+        {
+            _logger.LogInformation($"GET by charName= {charName}");
+            try
+            {
+                var chars = await _userCharRepository.GetCharacteristicByNameAsync(charName);
+                if (chars == null)
+                {
+                    _logger.LogInformation($"Characteristic of name= {charName} not found");
+                    return NotFound($"Characteristic of name= {charName} not found");
+                }
+                return Ok(_mapper.Map<UserCharGetDTO[]>(chars));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+        }
+
+
+        /// <summary>
         /// Get user preference byd name and userId
         /// </summary>
         /// <param name="prefId"></param>
@@ -266,11 +294,11 @@ namespace Hugger_Application.Controllers
         /// <response code="500">Server not responding</response>
 
 
-        [HttpGet("{userId:int}/prefs/{prefName}")]
+        [HttpGet("{userId:int}/prefs/{prefId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserPrefGetDTO>> GetUserPrefByNameAndUserId(int prefId, int userId)
+        public async Task<ActionResult<UserPrefGetDTO>> GetUserPrefByIDAndUserId(int prefId, int userId)
         {
             _logger.LogInformation($"GET by prefId= {prefId} and userId= {userId}");
             try
@@ -278,8 +306,8 @@ namespace Hugger_Application.Controllers
                 var userPref = await _userPrefRepository.GetUserPreferenceByID_UserIDAsync(prefId, userId);
                 if (userPref == null)
                 {
-                    _logger.LogInformation($"Preferences of name= {prefId} for userId= {userId} not found");
-                    return NotFound($"Preference of name= {prefId} for user not found");
+                    _logger.LogInformation($"Preferences of id= {prefId} for userId= {userId} not found");
+                    return NotFound($"Preference of id= {prefId} for user not found");
                 }
                 return Ok(_mapper.Map<UserPrefGetDTO>(userPref));
             }
@@ -289,6 +317,43 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
+
+        /// <summary>
+        /// Get user characteristic byd name and userId
+        /// </summary>
+        /// <param name="charId"></param>
+        /// <param name="userId"></param>
+        /// <returns>Characteristic of users</returns>
+        /// <response code="200">Return user characteristic</response> 
+        /// <response code="404">User characteristic not found</response> 
+        /// <response code="500">Server not responding</response>
+
+
+        [HttpGet("{userId:int}/chars/{charId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserCharGetDTO>> GetUserPrefByNameAndUserId(int charId, int userId)
+        {
+            _logger.LogInformation($"GET by charId= {charId} and userId= {userId}");
+            try
+            {
+                var userChar = await _userCharRepository.GetUserCharacteristicByCharID_UserIDAsync(charId, userId);
+                if (userChar == null)
+                {
+                    _logger.LogInformation($"Characteristic of id= {charId} for userId= {userId} not found");
+                    return NotFound($"Characteristic of id= {charId} for user not found");
+                }
+                return Ok(_mapper.Map<UserCharGetDTO>(userChar));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+        }
+
+
 
 
         /// <summary>
