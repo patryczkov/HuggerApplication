@@ -9,7 +9,7 @@ namespace Hugger_Application.Models.UserCharacteristicDTO
     {
         public int UserId { get; set; }
         public int CharacteristicId { get; set; }
-        public string  CahracteristicName { get; set; }
+        public string  CharacteristicName { get; set; }
         public string  Value { get; set; }
     }
 }

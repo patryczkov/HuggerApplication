@@ -49,24 +49,24 @@ namespace Hugger_Application.Data.Repository.UserCharRepository
         {
             _logger.LogInformation($"Getting characteristics for userId= {userId} and charId= {charId}");
 
-            var userPreferences = _context.Users_Characteristics
+            var userCharacteristics = _context.Users_Characteristics
                 .Include(usrchr => usrchr.Characteristic)
                 .Include(usrchr => usrchr.User)
                 .Where(usrchr => usrchr.UserId == userId);
 
-            return await userPreferences.FirstOrDefaultAsync();
+            return await userCharacteristics.FirstOrDefaultAsync();
         }
 
         public async Task<UserCharacteristic[]> GetUserCharacteristicsByUserIdAsync(int userId)
         {
             _logger.LogInformation($"Getting characteristics for userId= {userId}");
 
-            var userPreferences = _context.Users_Characteristics
+            var userCharacteristics = _context.Users_Characteristics
                 .Include(usrchr => usrchr.Characteristic)
                 .Include(usrchr => usrchr.User)
                 .Where(usrchr => usrchr.UserId == userId);
 
-            return await userPreferences.ToArrayAsync();
+            return await userCharacteristics.ToArrayAsync();
         }
     }
 }
