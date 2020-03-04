@@ -9,10 +9,10 @@ namespace Hugger_Application.Data.Repository.UserPrefRepository
 {
     public interface IUserPrefRepository : IRepository<UserPreference>
     {
-        Task<UserPreference[]> GetUserPreferencesAsync(int userId);
+        Task<UserPreference[]> GetUserPreferencesByUserIdAsync(int userId);
         Task<UserPreference> GetUserPreferenceByID_UserIDAsync(int predId, int userId);
-        Task<Preference> GetPreferenceByNameAsync(string prefName);
-        Task<Preference> GetPreferenceNameByIdAsync(int prefId);
+        Task<Preference> GetPreferenceByPrefNameAsync(string prefName);
+        Task<Preference> GetPreferenceByPrefIdAsync(int prefId);
 
     }
 }

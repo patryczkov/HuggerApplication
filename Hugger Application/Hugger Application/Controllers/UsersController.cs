@@ -16,6 +16,8 @@ using Hugger_Application.Models.GoogleDriveAPI;
 using Hugger_Application.Data.Repository.UserPrefRepository;
 using Microsoft.Extensions.Logging;
 using Hugger_Application.Models.UserPreferancesDTO;
+using Hugger_Application.Models.UserCharacteristicDTO;
+using Hugger_Application.Data.Repository.UserCharRepository;
 
 namespace Hugger_Application.Controllers
 {
@@ -29,6 +31,7 @@ namespace Hugger_Application.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserPrefRepository _userPrefRepository;
+        private readonly IUserCharRepository _userCharRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<UsersController> _logger;
         private readonly IUserService _userService;
@@ -37,15 +40,17 @@ namespace Hugger_Application.Controllers
         /// </summary>
         /// <param name="userRepository"></param>
         /// <param name="userPrefRepository"></param>
+        /// <param name="userCharRepository"></param>
         /// <param name="mapper"></param>
         /// <param name="logger"></param>
         /// <param name="userService"></param>
         public UsersController(IUserRepository userRepository, IUserPrefRepository userPrefRepository,
-            IMapper mapper, ILogger<UsersController> logger,
-            IUserService userService)
+            IUserCharRepository userCharRepository, IMapper mapper,
+            ILogger<UsersController> logger,IUserService userService)
         {
             _userRepository = userRepository;
             _userPrefRepository = userPrefRepository;
+            _userCharRepository = userCharRepository;
             _mapper = mapper;
             _logger = logger;
             _userService = userService;
@@ -117,7 +122,6 @@ namespace Hugger_Application.Controllers
         /// Get user but following id
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="includePreferences"></param>
         /// <returns>Returns user by given id</returns>
         /// <response code="200">Return user</response> 
         /// <response code="404">User not found</response> 
@@ -164,7 +168,7 @@ namespace Hugger_Application.Controllers
             _logger.LogInformation($"GET user preferances for userId= {userId}");
             try
             {
-                var userPrefs = await _userPrefRepository.GetUserPreferencesAsync(userId);
+                var userPrefs = await _userPrefRepository.GetUserPreferencesByUserIdAsync(userId);
                 if (userPrefs == null)
                 {
                     _logger.LogInformation($"Userprefs for userId= {userId} not found");
@@ -180,6 +184,39 @@ namespace Hugger_Application.Controllers
             }
 
         }
+        /// <summary>
+        /// Get user characteristics by userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Characteristics of user</returns>
+        /// <response code="200">Return user characteristics</response> 
+        /// <response code="404">Characteristics not found</response> 
+        /// <response code="500">Server not responding</response>
+        [HttpGet("{userId:int}/chars")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserCharGetDTO[]>> GetUserCharacteristics(int userId)
+        {
+            _logger.LogInformation($"GET user characterisitcs for userId= {userId}");
+            try
+            {
+                var userChars = await _userCharRepository.GetUserCharacteristicsByUserIdAsync(userId);
+                if (userChars == null)
+                {
+                    _logger.LogInformation($"UserChars for userId= {userId} not found");
+                    return NotFound("User has no characteristics");
+                }
+                return Ok(_mapper.Map<UserCharGetDTO[]>(userChars));
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+        }
+
 
         /// <summary>
         /// Get preference by name
@@ -194,12 +231,12 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserPrefGetDTO[]>> GetUserPreferences(string prefName)
+        public async Task<ActionResult<UserPrefGetDTO[]>> GetUserPreferencesName(string prefName)
         {
             _logger.LogInformation($"GET by prefName= {prefName}");
             try
             {
-                var prefs = await _userPrefRepository.GetPreferenceByNameAsync(prefName);
+                var prefs = await _userPrefRepository.GetPreferenceByPrefNameAsync(prefName);
                 if (prefs == null)
                 {
                     _logger.LogInformation($"Preferences of name= {prefName} not found");
@@ -214,6 +251,39 @@ namespace Hugger_Application.Controllers
             }
         }
         /// <summary>
+        /// Get characteristic by name
+        /// </summary>
+        /// <param name="charName"></param>
+        /// <returns>Preferences of users</returns>
+        /// <response code="200">Return user characteristic</response> 
+        /// <response code="404">User characteristic not found</response> 
+        /// <response code="500">Server not responding</response>
+        [HttpGet("chars/{charName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserCharGetDTO[]>> GetUserCharacteristicsName(string charName)
+        {
+            _logger.LogInformation($"GET by charName= {charName}");
+            try
+            {
+                var chars = await _userCharRepository.GetCharacteristicByNameAsync(charName);
+                if (chars == null)
+                {
+                    _logger.LogInformation($"Characteristic of name= {charName} not found");
+                    return NotFound($"Characteristic of name= {charName} not found");
+                }
+                return Ok(_mapper.Map<UserCharGetDTO[]>(chars));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+        }
+
+
+        /// <summary>
         /// Get user preference byd name and userId
         /// </summary>
         /// <param name="prefId"></param>
@@ -224,11 +294,11 @@ namespace Hugger_Application.Controllers
         /// <response code="500">Server not responding</response>
 
 
-        [HttpGet("{userId:int}/prefs/{prefName}")]
+        [HttpGet("{userId:int}/prefs/{prefId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserPrefGetDTO>> GetUserPrefByNameAndUserId(int prefId, int userId)
+        public async Task<ActionResult<UserPrefGetDTO>> GetUserPrefByIDAndUserId(int prefId, int userId)
         {
             _logger.LogInformation($"GET by prefId= {prefId} and userId= {userId}");
             try
@@ -236,8 +306,8 @@ namespace Hugger_Application.Controllers
                 var userPref = await _userPrefRepository.GetUserPreferenceByID_UserIDAsync(prefId, userId);
                 if (userPref == null)
                 {
-                    _logger.LogInformation($"Preferences of name= {prefId} for userId= {userId} not found");
-                    return NotFound($"Preference of name= {prefId} for user not found");
+                    _logger.LogInformation($"Preferences of id= {prefId} for userId= {userId} not found");
+                    return NotFound($"Preference of id= {prefId} for user not found");
                 }
                 return Ok(_mapper.Map<UserPrefGetDTO>(userPref));
             }
@@ -247,6 +317,43 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
+
+        /// <summary>
+        /// Get user characteristic byd name and userId
+        /// </summary>
+        /// <param name="charId"></param>
+        /// <param name="userId"></param>
+        /// <returns>Characteristic of users</returns>
+        /// <response code="200">Return user characteristic</response> 
+        /// <response code="404">User characteristic not found</response> 
+        /// <response code="500">Server not responding</response>
+
+
+        [HttpGet("{userId:int}/chars/{charId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserCharGetDTO>> GetUserPrefByNameAndUserId(int charId, int userId)
+        {
+            _logger.LogInformation($"GET by charId= {charId} and userId= {userId}");
+            try
+            {
+                var userChar = await _userCharRepository.GetUserCharacteristicByCharID_UserIDAsync(charId, userId);
+                if (userChar == null)
+                {
+                    _logger.LogInformation($"Characteristic of id= {charId} for userId= {userId} not found");
+                    return NotFound($"Characteristic of id= {charId} for user not found");
+                }
+                return Ok(_mapper.Map<UserCharGetDTO>(userChar));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+        }
+
+
 
 
         /// <summary>
@@ -309,10 +416,7 @@ namespace Hugger_Application.Controllers
         /// <response code="201">User preference created</response>
         /// <response code="400">User preference exist</response> 
         /// <response code="500">Server not responding</response>
-
-
-
-        [HttpPost("newUsrPrefs")]
+        [HttpPost("newUserPref")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -325,9 +429,9 @@ namespace Hugger_Application.Controllers
                 if (existingUserPreference != null) return BadRequest($"This user has this preference");
 
 
-                _logger.LogInformation($"Mapping userPreference");
+                _logger.LogInformation($"Mapping user preference");
                 var userPref = _mapper.Map<UserPreference>(userPrefModel);
-                _logger.LogInformation("Creating new userPreference");
+                _logger.LogInformation("Creating new user preference");
                 _userPrefRepository.Create(userPref);
 
                 if (await _userPrefRepository.SaveChangesAsync())
@@ -342,6 +446,46 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
+
+        /// <summary>
+        /// Create new user characteristic
+        /// </summary>
+        /// <param name="userCharCreate"></param>
+        /// <returns>New userChar to database</returns>
+        /// <response code="201">User characteristic created</response>
+        /// <response code="400">User characteristic exist</response> 
+        /// <response code="500">Server not responding</response>
+        [HttpPost("newUserChar")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserCharCreateDTO>> PostUserCharacteristics(UserCharCreateDTO userCharCreate)
+        {
+            _logger.LogInformation($"POST new user characteristic");
+            try
+            {
+                var existingUserCharacteristic = await _userCharRepository.GetUserCharacteristicByCharID_UserIDAsync(userCharCreate.CharacteristicId, userCharCreate.UserId);
+                if (existingUserCharacteristic != null) return BadRequest($"This user has this characteristic");
+
+
+                _logger.LogInformation($"Mapping user characteristic");
+                var userChar = _mapper.Map<UserCharacteristic>(userCharCreate);
+                _logger.LogInformation("Creating new user characteristic");
+                _userCharRepository.Create(userChar);
+
+                if (await _userPrefRepository.SaveChangesAsync())
+                    return Created($"hugger/users/{userCharCreate.UserId}/prefs/{userCharCreate.CharacteristicId}",
+                        _mapper.Map<UserCharCreateDTO>(userCharCreate));
+
+                else return BadRequest("Failed to add new user characteristic");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+        }
+
 
         /// <summary>
         /// Update/fix whole user data, by certain id
@@ -444,6 +588,44 @@ namespace Hugger_Application.Controllers
                 _mapper.Map(updateDTO, existingUserPref);
 
                 if (await _userPrefRepository.SaveChangesAsync()) return Ok(_mapper.Map<UserPrefGetDTO>(existingUserPref)); 
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
+            }
+            return BadRequest("Could not update data for userPreference");
+        }
+
+
+        /// <summary>
+        /// Update user characteristic value 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="charId"></param>
+        /// <param name="updateUserCharDTO"></param>
+        /// <returns>Updated user characteristic value</returns> 
+        /// <response code="200">User characteristic succesfully updated</response>
+        /// <response code="400">User characteristic couldn't be updated</response> 
+        /// <response code="404">User characteristic couldn't be found</response> 
+        /// <response code="500">Server not responding</response>
+        [HttpPatch("{userId:int}/chars/{charId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserCharGetDTO>> PatchUserChar(int userId, int charId, UserCharUpdateDTO updateUserCharDTO)
+        {
+            _logger.LogInformation($"PATCH user characteristic for userID= {userId}");
+            try
+            {
+                var existingUserChar = await _userCharRepository.GetUserCharacteristicByCharID_UserIDAsync(charId, userId);
+                if (existingUserChar == null) return NotFound($"Could not find the user characteristic");
+
+                _mapper.Map(updateUserCharDTO, existingUserChar);
+
+                if (await _userCharRepository.SaveChangesAsync()) return Ok(_mapper.Map<UserCharGetDTO>(existingUserChar));
             }
             catch (Exception ex)
             {

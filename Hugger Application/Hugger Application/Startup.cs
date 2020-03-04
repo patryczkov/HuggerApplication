@@ -6,6 +6,7 @@ using System.Text;
 using AutoMapper;
 using Hugger_Application.Data.Repository.HugRepository;
 using Hugger_Application.Data.Repository.MatchRepository;
+using Hugger_Application.Data.Repository.UserCharRepository;
 using Hugger_Application.Data.Repository.UserPrefRepository;
 using Hugger_Application.Helpers;
 using Hugger_Application.Models.Repository;
@@ -53,7 +54,10 @@ namespace Hugger_Application
             services.AddScoped<IHugRepository, HugRepository>();
 
             services.AddScoped<IMatchRepository, MatchRepository>();
+            
             services.AddScoped<IUserPrefRepository, UserPrefRepository>();
+
+            services.AddScoped<IUserCharRepository, UserCharRepository>();
 
             //=========ConfigureOfApp
             services.Configure<AppSettings>(appSettingSection);
