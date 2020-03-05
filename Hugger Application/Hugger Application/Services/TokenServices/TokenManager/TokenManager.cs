@@ -14,9 +14,9 @@ namespace Hugger_Application.Services.TokenServices.TokenManager
     {
         private readonly IDistributedCache _cache;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IOptions<JwtOptions> _jwtOptions;
+        private readonly IOptions<JWTOptions> _jwtOptions;
 
-        public TokenManager(IDistributedCache cache, IHttpContextAccessor httpContextAccessor, IOptions<JwtOptions> jwtOptions)
+        public TokenManager(IDistributedCache cache, IHttpContextAccessor httpContextAccessor, IOptions<JWTOptions> jwtOptions)
         {
             _cache = cache;
             _httpContextAccessor = httpContextAccessor;

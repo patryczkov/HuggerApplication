@@ -27,7 +27,10 @@ namespace Hugger_Application.Services.TokenServices
         public JsonWebToken Create(string login, int userId, int userRoleId)
         {
             var nowUtc = DateTime.UtcNow;
-            var expires = nowUtc.AddMinutes(_options.ExpiryMinutes);
+
+            //TODO dev mode only, remember to change it!
+            var expires = nowUtc.AddDays(7);
+            //var expires = nowUtc.AddMinutes(_options.ExpiryMinutes);
             var centuryBegin = new DateTime(1970, 1, 1).ToUniversalTime();
             var exp = (long)(new TimeSpan(expires.Ticks - centuryBegin.Ticks).TotalSeconds);
             var iat = (long)(new TimeSpan(nowUtc.Ticks - centuryBegin.Ticks).TotalSeconds);

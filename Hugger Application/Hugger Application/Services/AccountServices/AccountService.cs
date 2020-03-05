@@ -56,39 +56,39 @@ namespace Hugger_Application.Services.AccountServices
             refreshToken.Revoked = true;
         }
 
-        public JsonWebToken SignIn(string login, string password)
+        public JsonWebToken SignIn(User user)
         {
-            var user = GetUser(login);
-            if (user == null)
+            var userLogged = GetUser(userLogged.Login);
+            if (userLogged == null)
             {
                 throw new Exception("Invalid credentials.");
             }
-            var jwt = _jwtHandler.Create(user.Login, user.Id, user.ServerRoleId);
-            var refreshToken = _passwordHasher.HashPassword(user, Guid.NewGuid().ToString())
+            var jwt = _jwtHandler.Create(userLogged.Login, userLogged.Id, userLogged.ServerRoleId);
+            var refreshToken = _passwordHasher.HashPassword(userLogged, Guid.NewGuid().ToString())
                 .Replace("+", string.Empty)
                 .Replace("=", string.Empty)
                 .Replace("/", string.Empty);
             jwt.RefreshToken = refreshToken;
-            _refreshTokens.Add(new RefreshToken { Login = login, UserId=user.Id, UserRoleId=user.ServerRoleId, Token = refreshToken });
+            _refreshTokens.Add(new RefreshToken { Login = login, UserId=userLogged.Id, UserRoleId=userLogged.ServerRoleId, Token = refreshToken });
 
             return jwt;
         }
 
-        public void SignUp(string login, string password)
+        public void SignUp(User user)
         {
-            if (string.IsNullOrWhiteSpace(login))
+            if (string.IsNullOrWhiteSpace(user.Login))
             {
                 throw new Exception($"Login can not be empty.");
             }
-            if (string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(user.Password))
             {
                 throw new Exception($"Password can not be empty.");
             }
-            if (GetUser(login) != null)
+            if (GetUser(user.Login) != null)
             {
-                throw new Exception($"Login '{login}' is already in use.");
+                throw new Exception($"Login '{user.Login}' is already in use.");
             }
-            _users.Add(new User { Login = login, Password = password });
+            _users.Add(user);
         }
         private User GetUser(string login)
           => _context.Users.SingleOrDefault(x => string.Equals(x.Login, login, StringComparison.InvariantCultureIgnoreCase));
