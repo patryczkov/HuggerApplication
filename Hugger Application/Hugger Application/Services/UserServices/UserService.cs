@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -20,6 +21,8 @@ namespace Hugger_Application.Services
         private readonly ILogger<UserService> _logger;
         private readonly AppSettings _appstettings;
 
+
+
         public UserService(UserContext userContext, ILogger<UserService> logger, IOptions<AppSettings> appSetings)
         {
             _userContext = userContext;
@@ -27,13 +30,13 @@ namespace Hugger_Application.Services
             _appstettings = appSetings.Value;
         }
 
+      
 
-
-        public async Task<User> AuthenticateUserAsync(string login, string password)
+        public async Task<User> LogInUserAsync(string login, string password)
         {
             JwtSecurityTokenHandler tokenHandler;
             SecurityToken token;
-            
+
             _logger.LogInformation($"Looking for user with login {login}");
             //finding users
             IQueryable<User> usersQuery = _userContext.Users;
@@ -41,12 +44,22 @@ namespace Hugger_Application.Services
             if (currentUser == null) return null;
 
             GenerateToken(currentUser, out tokenHandler, out token);
-            
+
             currentUser.Token = tokenHandler.WriteToken(token);
-            _userContext.SaveChanges();
+
+
+            //_userContext.SaveChanges();
 
             return currentUser;
         }
+
+
+
+
+
+
+
+
         private void GenerateToken(User currentUser, out JwtSecurityTokenHandler tokenHandler, out SecurityToken token)
         {
             tokenHandler = new JwtSecurityTokenHandler();

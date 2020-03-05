@@ -16,7 +16,6 @@ using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,11 +41,22 @@ namespace Hugger_Application
 
 
             services.AddDbContext<UserContext>();
+            
+            services.AddAutoMapper(typeof(Startup));
+            
+            services.AddControllers();
 
+            services.AddCors();
 
+            //AddTransient -> Transient lifetime services are created each time they are requested
+            //Transient objects are always different; a new instance is provided to every controller and every service.
 
+            //AddScoped -> Scoped lifetime services are created once per request
+            //Scoped objects are the same within a request, but different across different requests.
 
-            //=============Intefaces and its implementation
+            //AddSingleton -> Singleton objects are the same for every object and every request.
+
+            //=============Intefaces and its implementation==============
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
 
@@ -59,19 +69,17 @@ namespace Hugger_Application
 
             services.AddScoped<IUserCharRepository, UserCharRepository>();
 
-            //=========ConfigureOfApp
+
+
+            //=========ConfigureOfApp=======================================
             services.Configure<AppSettings>(appSettingSection);
             var appSettings = appSettingSection.Get<AppSettings>();
 
             //services.AddDbContext<UserContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("HuggerContext")));
 
-            services.AddAutoMapper(typeof(Startup));
-
-            services.AddControllers();
-
-            services.AddCors();
-            //==========JWT token
+            //==========JWT token==========================================
+            
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {
@@ -90,7 +98,7 @@ namespace Hugger_Application
                     ValidateAudience = false
                 };
             });
-
+            //==========Swagger==========================================
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v0.1", new OpenApiInfo

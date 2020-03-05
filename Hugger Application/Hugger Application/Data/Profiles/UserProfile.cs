@@ -16,11 +16,24 @@ namespace Hugger_Application.Data
             CreateMap<User, UserRegisterDTO>()
                 .ReverseMap();
 
+            CreateMap<User, UserLoginDTO>()
+                .ReverseMap();
+
+            CreateMap<User, UserLogoutDTO>()
+                .ReverseMap();
+
+            CreateMap<User, UserGetDTO>()
+                .ReverseMap();
+
             CreateMap<User, UserFixDTO>()
                 .ReverseMap();
 
             CreateMap<User, UserUpdateDTO>()
                 .ReverseMap();
+            
+            CreateMap<User, UserAuthDTO>()
+                .ReverseMap();
+
 
         }
     }

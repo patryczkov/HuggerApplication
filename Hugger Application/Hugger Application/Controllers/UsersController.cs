@@ -55,6 +55,8 @@ namespace Hugger_Application.Controllers
             _logger = logger;
             _userService = userService;
         }
+
+        
         /// <summary>
         /// Authenticate user by model which include login and password
         /// </summary>
@@ -74,19 +76,18 @@ namespace Hugger_Application.Controllers
         /// <response code="400">If no user with certain login/password</response>
         /// <response code="500">If server not responding</response>
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserRegisterDTO>> Authenticate(AuthenticateUserDTO authenticateUserModel)
+        public async Task<ActionResult<UserLoginDTO>> Authenticate(UserAuthDTO authenticateUserModel)
         {
-            _logger.LogInformation($"GET authentication for userLogin= {authenticateUserModel.Login}");
+            _logger.LogInformation($"POST authentication for userLogin= {authenticateUserModel.Login}");
             try
             {
-
-                var user = await _userService.AuthenticateUserAsync(authenticateUserModel.Login, authenticateUserModel.Password);
+                var user = await _userService.LogInUserAsync(authenticateUserModel.Login, authenticateUserModel.Password);
                 if (user == null) return BadRequest("Username or password is not correct");
-                return Ok(_mapper.Map<UserRegisterDTO>(user));
+                return Ok(_mapper.Map<UserLoginDTO>(user));
             }
             catch (Exception ex)
             {
@@ -94,13 +95,13 @@ namespace Hugger_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
+
         /// <summary>
         /// Get all user from database
         /// </summary>
         /// <returns>Return whole users in database</returns>
         /// <response code="200">Return users</response> 
         /// <response code="500">If server not responding</response>
-
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -364,7 +365,8 @@ namespace Hugger_Application.Controllers
         /// <response code="201">User created</response>
         /// <response code="400">User login or id in use</response> 
         /// <response code="500">Server not responding</response>
-        [HttpPost]
+        [AllowAnonymous]
+        [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -378,24 +380,12 @@ namespace Hugger_Application.Controllers
                 if (existingUser != null) return BadRequest($"{userModel.Login} in use");
 
                 existingUser = await _userRepository.GetUserByIDAsync(userModel.Id);
-                if (existingUser != null) return BadRequest($"{userModel.Id} in use");
+                if (existingUser != null) return BadRequest($"User existing");
 
-                //TODO move it to service
-                _logger.LogInformation($"Connecting to gdrive");
-                var gDriveService = ConnectToGDrive.GetDriveService();
-
-                _logger.LogInformation($"Create folder path and name");
-                var userFolderPathName = ($"user_{userModel.Login}_photos");
-                userModel.FolderPath = userFolderPathName;
-
-                _logger.LogInformation($"Create folder on gdrive");
-                var userFolderId = GDriveFolderManagerService.CreateFolder(userFolderPathName, gDriveService);
-                userModel.FolderId = userFolderId;
-
-
+     
                 _logger.LogInformation($"Mapping user");
                 var user = _mapper.Map<User>(userModel);
-                _userRepository.Create(user);
+                _userRepository.CreateUser(user);
 
                 if (await _userRepository.SaveChangesAsync()) return Created($"hugger/users/{user.Id}", _mapper.Map<UserRegisterDTO>(user));
                 else return BadRequest("Failed to add new user");
@@ -407,7 +397,7 @@ namespace Hugger_Application.Controllers
             }
 
         }
-
+        
         /// <summary>
         /// Create new user preference
         /// </summary>

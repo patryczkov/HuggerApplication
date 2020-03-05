@@ -1,4 +1,5 @@
 ﻿
+using Hugger_Application.Models.GoogleDriveAPI;
 using Hugger_Web_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,24 @@ namespace Hugger_Application.Models.Repository
         {
             _userContext = userContext;
             _logger = logger;
+        }
+
+        public void CreateUser(User user)
+        {
+            
+            _logger.LogInformation($"Connecting to gdrive");
+            var gDriveService = ConnectToGDrive.GetDriveService();
+
+            _logger.LogInformation($"Create folder path and name");
+            var userFolderPathName = ($"user_{user.Login}_photos");
+            user.FolderPath = userFolderPathName;
+
+            _logger.LogInformation($"Create folder on gdrive");
+            var userFolderId = GDriveFolderManagerService.CreateFolder(userFolderPathName, gDriveService);
+            user.FolderId = userFolderId;
+
+            _userContext.Add(user);
+
         }
 
         public async Task<User[]> GetAllUsersAsync(bool includeMatches = false)
