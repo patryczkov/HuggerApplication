@@ -8,6 +8,6 @@ namespace Hugger_Application.Services.HugService
 {
     public interface IHugService
     {
-        public Task CheckIfUsersHasAMatch(HugDTO hugDTO);
+        public Task CheckIfUsersHasAMatchAsync(HugDTO hugDTO);
     }
 }

@@ -23,7 +23,7 @@ namespace Hugger_Application.Services.HugService
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task CheckIfUsersHasAMatch(HugDTO hugDTO)
+        public async Task CheckIfUsersHasAMatchAsync(HugDTO hugDTO)
         {
             _logger.LogInformation($"Looking for match of senderIg= {hugDTO.UserIDSender} ");
             var matchHug = await _hugRepository.GetHugBy_ReceiverId_UserSenderIdAsync(hugDTO.UserIDSender, hugDTO.UserIDReceiver);
