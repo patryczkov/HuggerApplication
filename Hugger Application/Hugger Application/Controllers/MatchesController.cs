@@ -46,9 +46,9 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<MatchGetDTO[]>> Get(int userId)
         {
+            _logger.LogInformation($"GET matches for userId= {userId}");
             try
             {
-                _logger.LogInformation($"GET matches for userId= {userId}");
                 var matchesForUser = await _matchesRepository.GetMatchesByUserIdAsync(userId);
                 if (matchesForUser == null || matchesForUser.Length == 0)
                 {
@@ -84,9 +84,9 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<MatchGetDTO>> Delete(int userId, int userReceiverId)
         {
+            _logger.LogInformation($"DELETE match for userId= {userId} and userReceiverId= {userReceiverId}");
             try
             {
-                _logger.LogInformation($"DELETE match for userId= {userId} and userReceiverId= {userReceiverId}");
                 var oldMatch = await _matchesRepository.GetMatchByUserId_UserReceiverIdAsync(userId, userReceiverId);
                 if (oldMatch == null)
                 {

@@ -8,6 +8,7 @@ using Hugger_Web_Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +27,14 @@ namespace Hugger_Application.Controllers
         private readonly IHugRepository _hugRepository;
         private readonly IHugService _hugService;
         private readonly IMapper _mapper;
+        private readonly ILogger<HugsController> _logger;
 
-        public HugsController(IHugRepository hugRepository, IHugService hugService, IMapper mapper)
+        public HugsController(IHugRepository hugRepository, IHugService hugService, IMapper mapper, ILogger<HugsController> logger)
         {
             _hugRepository = hugRepository;
             _hugService = hugService;
             _mapper = mapper;
+            _logger = logger;
         }
 
 
@@ -50,15 +53,17 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<HugDTO[]>> Get(int userId)
         {
+            _logger.LogInformation($"GET hugs for userId= {userId}");
             try
             {
                 var hugs = await _hugRepository.GetHugsBy_SenderUserIdAsync(userId);
-                if (hugs.Length == 0 || hugs == null) return NotFound($"There is no hugs for userId= {userId}");
+                if (hugs.Length == 0 || hugs == null) return NotFound($"There is no hugs for this user");
 
                 return Ok(_mapper.Map<HugDTO[]>(hugs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogInformation(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
 
             }
@@ -79,16 +84,17 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<HugDTO>> Get(int userId, int hugId)
         {
+            _logger.LogInformation($"GET hugId= {hugId} for userId= {userId}");
             try
             {
                 var hug = await _hugRepository.GetHugBy_SenderUserIdAndHugIdAsync(userId, hugId);
-                if (hug == null) return NotFound($"There is no hug for id= {hugId} and userId= {userId}");
+                if (hug == null) return NotFound($"There is no hug for this user");
 
                 return Ok(_mapper.Map<HugDTO>(hug));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogInformation(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
@@ -111,6 +117,7 @@ namespace Hugger_Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<HugDTO>> Post(int userId, HugDTO hugDTO)
         {
+            _logger.LogInformation($"POST new hug");
             if (userId != hugDTO.UserIDSender) return UnprocessableEntity("UserId is different than model userId");
             try
             {
@@ -121,7 +128,9 @@ namespace Hugger_Application.Controllers
                     return BadRequest("Hug exists");
                 }
 
-                _hugService.CheckIfUsersHasAMatch(hugDTO);
+
+                _logger.LogInformation($"Checking for match");
+                await _hugService.CheckIfUsersHasAMatchAsync(hugDTO);
 
 
                 //TODO HUG id autoincrement, context pool
@@ -138,9 +147,9 @@ namespace Hugger_Application.Controllers
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogInformation(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Could not reach to database");
             }
         }
