@@ -658,17 +658,6 @@ namespace Hugger_Application.Controllers
             }
             return BadRequest("Failed to delete user");
         }
-
-
-        //TODO move it to service
-        private bool CheckUserIdAccessLevel(int userId)
-        {
-            var jwtToken = Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(jwtToken);
-            var tokenId = int.Parse(token.Claims.First(c => c.Type == "unique_name").Value);
-            return tokenId == userId;
-        }
     }
 }
 

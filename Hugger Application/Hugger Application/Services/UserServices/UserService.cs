@@ -1,6 +1,9 @@
 ﻿using Hugger_Application.Helpers;
 using Hugger_Application.Models;
 using Hugger_Web_Application.Models;
+using JWT.Algorithms;
+using JWT.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -20,6 +23,7 @@ namespace Hugger_Application.Services
         private readonly UserContext _userContext;
         private readonly ILogger<UserService> _logger;
         private readonly AppSettings _appstettings;
+        private List<User> loggedUsersList = new List<User>();
 
 
 
@@ -30,7 +34,7 @@ namespace Hugger_Application.Services
             _appstettings = appSetings.Value;
         }
 
-      
+
 
         public async Task<User> LogInUserAsync(string login, string password)
         {
@@ -43,21 +47,46 @@ namespace Hugger_Application.Services
             var currentUser = await usersQuery.SingleOrDefaultAsync(usr => usr.Login == login && usr.Password == password);
             if (currentUser == null) return null;
 
-            GenerateToken(currentUser, out tokenHandler, out token);
+            //GenerateToken(currentUser, out tokenHandler, out token);
 
-            currentUser.Token = tokenHandler.WriteToken(token);
-
+            // currentUser.Token = tokenHandler.WriteToken(token);
+            currentUser.Token = CreateToken(currentUser);
 
             //_userContext.SaveChanges();
 
+            loggedUsersList.Add(currentUser);
             return currentUser;
         }
 
+        public bool ValidateUserAbilityToEditProfile(int userId, HttpRequest httpRequest)
+        {
+            var jwtToken = httpRequest.Headers["Authorization"].ToString().Split(" ")[1];
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwtToken);
+            var userIdFromToken = int.Parse(token.Claims.First(c => c.Type == "userId").Value);
+            return userIdFromToken == userId;
+        }
+        //accesslvl 2 is for regular user
+        public bool ValidateUserAccessLevel(HttpRequest httpRequest, int accessLVL = 2)
+        {
+            var jwtToken = httpRequest.Headers["Authorization"].ToString().Split(" ")[1];
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwtToken);
+            var userRoleFromToken = int.Parse(token.Claims.First(c => c.Type == "userServerRoleID").Value);
+            return userRoleFromToken == accessLVL;
+        }
+        private string CreateToken(User user)
+        {
+            return  new JwtBuilder()
+                .WithAlgorithm(new HMACSHA256Algorithm())
+                .WithSecret(_appstettings.Secret)
+                //.AddClaim("exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds())
+                .AddClaim("exp", DateTime.UtcNow.AddDays(7))
+                .AddClaim("userId", user.Id.ToString())
+                .AddClaim("userServerRoleID", user.ServerRoleId.ToString())
+                .Encode();
 
-
-
-
-
+        }
 
 
         private void GenerateToken(User currentUser, out JwtSecurityTokenHandler tokenHandler, out SecurityToken token)
