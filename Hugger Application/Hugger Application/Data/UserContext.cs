@@ -21,8 +21,8 @@ namespace Hugger_Web_Application.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder contextOptionsBuilder)
         {
-            //contextOptionsBuilder.UseSqlServer(_configuration.GetConnectionString("HuggerContext"));
-            contextOptionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgresContext"));
+            contextOptionsBuilder.UseSqlServer(_configuration.GetConnectionString("HuggerContext"));
+            //contextOptionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgresContext"));
 
         }
 

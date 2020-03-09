@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hugger_Application.Migrations
 {
@@ -12,7 +11,7 @@ namespace Hugger_Application.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -25,7 +24,7 @@ namespace Hugger_Application.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     GPS = table.Column<string>(nullable: true),
                     LocalizationName = table.Column<string>(nullable: true)
                 },
@@ -39,7 +38,7 @@ namespace Hugger_Application.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -48,17 +47,31 @@ namespace Hugger_Application.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ServerRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServerRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Login = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
                     FolderPath = table.Column<string>(nullable: true),
                     FolderId = table.Column<string>(nullable: true),
                     LastWatchedUserId = table.Column<int>(nullable: false),
                     LocalizationId = table.Column<int>(nullable: false),
+                    ServerRoleId = table.Column<int>(nullable: false),
                     Token = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
@@ -73,6 +86,12 @@ namespace Hugger_Application.Migrations
                         principalTable: "Localizations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Users_ServerRoles_ServerRoleId",
+                        column: x => x.ServerRoleId,
+                        principalTable: "ServerRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,7 +99,7 @@ namespace Hugger_Application.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserIDSender = table.Column<int>(nullable: false),
                     UserIDReceiver = table.Column<int>(nullable: false)
                 },
@@ -100,7 +119,7 @@ namespace Hugger_Application.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserIDSender = table.Column<int>(nullable: false),
                     UserIDReceiver = table.Column<int>(nullable: false),
                     MatchDate = table.Column<string>(nullable: true)
@@ -120,15 +139,13 @@ namespace Hugger_Application.Migrations
                 name: "Users_Characteristics",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Value = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false),
-                    CharacteristicId = table.Column<int>(nullable: false)
+                    CharacteristicId = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users_Characteristics", x => x.Id);
+                    table.PrimaryKey("PK_Users_Characteristics", x => new { x.CharacteristicId, x.UserId });
                     table.ForeignKey(
                         name: "FK_Users_Characteristics_Characteristics_CharacteristicId",
                         column: x => x.CharacteristicId,
@@ -147,15 +164,13 @@ namespace Hugger_Application.Migrations
                 name: "Users_Preferences",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Value = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false),
-                    PreferenceId = table.Column<int>(nullable: false)
+                    PreferenceId = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users_Preferences", x => x.Id);
+                    table.PrimaryKey("PK_Users_Preferences", x => new { x.PreferenceId, x.UserId });
                     table.ForeignKey(
                         name: "FK_Users_Preferences_Preferences_PreferenceId",
                         column: x => x.PreferenceId,
@@ -175,7 +190,7 @@ namespace Hugger_Application.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TimeOfSend = table.Column<string>(nullable: true),
                     WasRead = table.Column<bool>(nullable: false),
                     MatchId = table.Column<int>(nullable: false)
@@ -212,19 +227,14 @@ namespace Hugger_Application.Migrations
                 column: "LocalizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Characteristics_CharacteristicId",
-                table: "Users_Characteristics",
-                column: "CharacteristicId");
+                name: "IX_Users_ServerRoleId",
+                table: "Users",
+                column: "ServerRoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Characteristics_UserId",
                 table: "Users_Characteristics",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_Preferences_PreferenceId",
-                table: "Users_Preferences",
-                column: "PreferenceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Preferences_UserId",
@@ -260,6 +270,9 @@ namespace Hugger_Application.Migrations
 
             migrationBuilder.DropTable(
                 name: "Localizations");
+
+            migrationBuilder.DropTable(
+                name: "ServerRoles");
         }
     }
 }

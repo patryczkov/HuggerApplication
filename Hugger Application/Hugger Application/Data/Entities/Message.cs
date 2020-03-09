@@ -13,7 +13,7 @@ namespace Hugger_Web_Application.Models
         public int Id { get; set; }
         
         public string TimeOfSend { get; set; }
-        public bool WasRead { get; set; } = false;
+        public bool WasRead { get; set; }
 
         [ForeignKey("Matches")]
         public int MatchId { get; set; }
