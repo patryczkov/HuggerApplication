@@ -16,7 +16,6 @@ namespace Hugger_Web_Application.Models
         public bool WasRead { get; set; }
         [MaxLength(255)]
         public string Content { get; set; }
-
         [ForeignKey("Matches")]
         public int MatchId { get; set; }
         public virtual Match Match { get; set; }

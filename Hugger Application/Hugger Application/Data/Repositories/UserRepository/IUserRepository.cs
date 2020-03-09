@@ -10,5 +10,6 @@ namespace Hugger_Application.Models.Repository
 
         Task<User[]> GetAllUsersByLocalizationIDAsync(bool includeLocalization = false);
         Task<User> GetUserByLoginAsync(string login);
+        void CreateUser(User user);
     }
 }

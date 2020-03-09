@@ -24,7 +24,8 @@ namespace Hugger_Application.Models
         public string FolderPath { get; set; }
         public string FolderId { get; set; }
         public int LastWatchedUserId { get; set; }
+        [Required]
         public int LocalizationId { get; set; }
-        public string Token { get; set; }
+        public int ServerRoleId { get; set; }
     }
 }
