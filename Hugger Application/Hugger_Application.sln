@@ -5,6 +5,11 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hugger_Application", "Hugger Application\Hugger_Application.csproj", "{1221E3E1-5E78-4C4D-A091-51716B6F035B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hugger_Application.Tests", "Hugger_Application.Tests\Hugger_Application.Tests.csproj", "{2ED66399-9707-40AC-B63F-02A8DF667DE1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1221E3E1-5E78-4C4D-A091-51716B6F035B} = {1221E3E1-5E78-4C4D-A091-51716B6F035B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{1221E3E1-5E78-4C4D-A091-51716B6F035B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1221E3E1-5E78-4C4D-A091-51716B6F035B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1221E3E1-5E78-4C4D-A091-51716B6F035B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ED66399-9707-40AC-B63F-02A8DF667DE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ED66399-9707-40AC-B63F-02A8DF667DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ED66399-9707-40AC-B63F-02A8DF667DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ED66399-9707-40AC-B63F-02A8DF667DE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
