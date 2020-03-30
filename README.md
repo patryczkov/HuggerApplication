@@ -14,6 +14,8 @@ The API was written in several assumptions:
 - JWT - verifies the user's access level to profile editing and logs into the service
 - React Native - to make application run smoothly on phone,
 
-https://github.com/patryczkov/HuggerApplication/blob/dev/DatabaseSchema.png?raw=true
+
+This is our database schema for now. It might change due to new ideas and optimalization issues.
+![Database Schema](https://github.com/patryczkov/HuggerApplication/blob/dev/DatabaseSchema.png?raw=true)
 
 
